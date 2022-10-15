@@ -1,0 +1,210 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 88
+---
+
+```{r setup, echo=FALSE, include=FALSE}
+knitr::opts_chunk$set(
+	message = FALSE,
+	warning = FALSE,
+	echo = TRUE
+)
+library(tidymodels)
+```
+
+# The Tidymodels Workflow
+
+## About Tidymodels
+
+`tidymodels` is an R meta-package, meaning it is essentially a bundle of R packages
+organized around a common theme. In this case, the theme is "modeling and machine
+learning using `tidyverse` principles". In order to make sense of that, one needs to
+have a general understanding of what the `tidyverse` is and its philosophy. The
+`tidyverse` is yet another R meta-package organized around the theme of "data science".
+The `tidyverse` packages share a common design philosophy, grammar, and many underlying
+data structures, such that working with `tidyverse` packages *feels* to the user as if
+they are leveraging a single, wide-ranging library by a single author (in the best
+case). There is an entire book on the subject of using the `tidyverse` to perform common
+data science tasks[@wickham_grolemund_2017], but for the purposes of this book, it is
+enough to understand the four principles upon which the `tidyverse` is built, that
+is[@wickham2022]:
+
+-   Re-use existing data structures
+-   Compose simple functions with the pipe
+-   Embrace functional programming
+-   Design for humans
+
+### Re-use existing data structures
+
+Where possible, `tidyverse` and, by extension, `tidymodels` packages rely on common data
+structures, typically a `tibble` or `data.frame` (a `tibble` is essentially an improved
+`data.frame` with much of the same API). For more focused operations on single data
+types, this is more often a standard R vector or an S3 object that shares the vector
+API. In short, data structures produced and consumed by `tidyverse` and `tidymodels`
+packages should behave as expected by someone who is familiar with base-R data
+structures. Data frames should be "tidy", consisting of variables in columns and
+observations in rows[@JSSv059i10].
+
+### Compose simple functions with pipes
+
+The `magrittr` library[@magrittr] has long provided a "pipe" (`%>%`) operator in R. More
+recently, a pipe operator (`|>`) has been introduced to the language itself. There are
+some subtle differences in usage between the two, but that is beyond the scope of this
+work. In an effort to be as forward-looking as possible, examples in this book will use
+the native pipe operator. Regardless of which operator is chosen, however, the effect is
+similar to the pipe operator (`|`) that many will be familiar with from the Unix shell,
+in that the pipe serves as an infix operator that takes the result of calling the
+left-hand side and passes that result as the first argument to the operation (usually a
+function call) on the right-hand side. This makes the examples below equivalent:
+
+```{r pipe-example0}
+output <- paste(unlist(strsplit("Replace:colons:with:spaces", ":")), collapse = " ")
+```
+
+```{r pipe-example1}
+input_str <- "Replace:colons:with:spaces"
+split_input <- strsplit(input_str, ":") 
+split_input_vec <- unlist(split_input) 
+output <- paste(split_input_vec, collapse = " ")
+```
+
+```{r pipe-example2}
+output <- "Replace:colons:with:spaces" |> strsplit(":") |> unlist() |> paste(collapse = " ")
+```
+
+```{r pipe-example3}
+output <- 
+  "Replace:colons:with:spaces" |> 
+  strsplit(":") |> 
+  unlist() |> 
+  paste(collapse = " ")
+```
+
+```{r pipe-example4}
+(output 
+  <- "Replace:colons:with:spaces" 
+  |> strsplit(":") 
+  |> unlist() 
+  |> paste(collapse = " "))
+```
+
+The first and most obvious benefit of this approach is readability. Using the pipe
+syntax, operations can be written in the order they are performed, as opposed to the
+"inside-out" approach of the first example. We can also avoid cluttering up the R
+environment with as in the "intermediate variables" approach of the second example. Less
+obvious are the benefits to coding habits; effective use of the pipe operator encourages
+sensible function naming and organization. The trade-off is that the programmer needs to
+be careful not to take multiple piped operations *too* far, breaking up long series of
+pipes with *some* intermediate variables as appropriate.
+
+### Embrace functional programming
+
+There's a lot to say about what functional programming actually *is*, but in this
+context it mostly means: immutable objects and copy-on-modify semantics, the frequent
+use of "pure" functions that do not have side-effects, using generic functions where
+possible and appropriate, and abstracting over loops in a more "iterator-like" fashion.
+
+### Design for humans
+
+This is a bit subjective, but the `tidyverse` and `tidymodels` strive to provide APIs
+that are *intuitive* for human users and friendly to the IDE such that autocomplete is a
+helpful tool for discovering functionality. Generally, being autocomplete-friendly means
+grouping function names under common prefixes like [`str_subset`, `str_detect`,
+`str_extract`]and [`add_model`, `add_recipe`, `add_formula`] as opposed to alternatives
+like [`subset_str`, `detect_str`, `extract_str`] and [`model_add`, `recipe_add`,
+`forumal_add`]or the like.
+
+## Philosophy in Practice
+
+These pieces of `tidyverse` philosophy adopted by `tidymodels` yield a common way of
+working with and thinking about code written using the `tidymodels` collection of
+packages. The most prominent example of this is the `tidymodels` workflow, or, rather,
+the `workflow` package which is bundled into `tidymodels`. Throughout this book, the
+term *workflow object* will be used to refer to an R object to which various
+pre-processing, modeling, and post-processing steps can be added to facilitate
+repeatable and ergonomic ML code. Commonly, this will consist of splitting the data
+(using the `rsample` package), creating and adding a *recipe* (from the `recipes`
+package), creating and adding a *model* (from the `parsnip` package), fitting the model,
+then using the model to make inferences or predictions. The *recipe* and *model* steps
+may be fairly dense as well, but every step along the way should ideally reflect the
+principles described above. This approach can be better demonstrated than described, as
+show below:
+
+```{r tidy-workflow}
+# Split the data into testing and training steps
+mtcars_split <- initial_split(mtcars)
+
+# Pre-process the data using a recipe
+(example_recipe
+  <- recipe(mpg ~ cyl + disp + hp + wt, 
+            data = training(mtcars_split))
+  |> step_mutate_at(cyl, fn = factor)
+  |> step_log(disp, hp)
+  |> step_interact(terms = ~ disp:hp))
+
+# Setup up the model
+(example_model
+  <- linear_reg()
+  |> set_engine("glm")
+  |> set_mode("regression"))
+
+# Bundle the recipe and model into a workflow, fit the model
+(example_workflow
+  <- workflow()
+  |> add_recipe(example_recipe)
+  |> add_model(example_model)
+  |> fit(data = training(mtcars_split)))
+
+# Add predictions to training data
+example_predictions <- augment(example_workflow, testing(mtcars_split))
+
+# Check performance
+metrics(example_predictions, mpg, .pred)
+```
+
+To the untrained eye, it may appear that all the functions used in this code are from a
+common library, given the similarity in their usage and the ease with which the outputs
+of one operation are passed along to the next, but there are actually at least five
+different R libraries at play here! This is a key benefit of `tidymodels`, the bundled
+packages work seamlessly together to provide a consistent developer experience.
+
+## Workflow Steps
+
+The typical steps involved in using `tidymodels` to train and work with ML models are
+described below. These steps may be undertaken in a different order than listed here and
+individual steps may not be as cleanly separated as indicated. There may be additional
+steps for training and testing multiple models or other complex tasks, but the following
+is a good, general guide.
+
+### Data Splitting
+
+In the first step, you'll primary use the `rsample` [@rsample] package to divide up the
+data for training, validating, and testing the model. At a minimum, this generally
+involves splitting the data set into *training* and *testing* samples. Models, sometimes
+many different models, can be trained on the *training* sample, but the *testing* sample
+should be used only once, to validate and measure model performance on "real" data at
+the end. You can also set up your data for re-sampling in this step.
+
+### Data Preparation
+
+The next step consists of creating a specification for data pre-processing using the
+`recipes` [@recipes] package. This can include a number of steps, including specifying
+the relationships between the response and predictor variables, data cleaning,
+transforming predictors, etc.
+
+### Model Specification
+
+In this step, the `parsnip` [@parsnip] package is typically used to create a model
+specification. This includes indicating the type of the model, the model engine, the
+model mode, and providing relevant parameters.
+
+### Bundling a Workflow
+
+This step utilizes the `workflows` [@workflows] package to bundle together the recipe
+and model specifications into a single *workflow object*, which can then be used to fit
+the model, make predictions, or other operations.
+
+### Checking Results
+
+In this step, the `yardstick` [@yardstick] package is used to measure model performance.

@@ -1,0 +1,32 @@
+--- 
+title: "Machine Learning with TidyModels"
+author: "Eric Burden"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib]
+# url: your book url like https://bookdown.org/yihui/bookdown
+# cover-image: path to the social sharing image like images/cover.jpg
+description: |
+  This is a primer on various ML modeling techniques and the `tidymodels`
+  syntax and workflow for leveraging these techniques.
+link-citations: yes
+github-repo: ericwburden/machine-learning-with-tidymodels
+---
+
+# About
+
+_Machine Learning with TidyModels_ is the result of my desire to gain a foundational
+understanding of machine learning and machine learning techniques _without_ 
+overcomplicating the process by wrestling with the huge variety of models and 
+modeling packages available in the R ecosystem. The promise of the `tidymodels`
+meta-package is a unified interface for preparing data, training models, and
+leveraging the results. I find this to be an eminently sensible approach and see
+in `tidymodels` an opportunity to let the software "get out of the way" and let
+me focus on the ML algorithms themselves. For me, this book serves as a training
+exercise. I hope that, when finished, it will serve as a valuable reference.
+
+## Software Used
+
+This book was developed with version **4.2.1** of the R language and version
+**1.0.0** of the `tidymodels` meta-package.
