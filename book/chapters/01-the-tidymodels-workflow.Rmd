@@ -4,15 +4,6 @@ editor_options:
     wrap: 88
 ---
 
-```{r setup, echo=FALSE, include=FALSE}
-knitr::opts_chunk$set(
-	message = FALSE,
-	warning = FALSE,
-	echo = TRUE
-)
-library(tidymodels)
-```
-
 # The Tidymodels Workflow
 
 ## About Tidymodels
@@ -131,7 +122,7 @@ may be fairly dense as well, but every step along the way should ideally reflect
 principles described above. This approach can be better demonstrated than described, as
 show below:
 
-```{r tidy-workflow}
+```{r tidy-workflow-example}
 # Split the data into testing and training steps
 mtcars_split <- initial_split(mtcars)
 

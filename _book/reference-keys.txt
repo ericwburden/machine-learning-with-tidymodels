@@ -13,3 +13,12 @@ data-preparation
 model-specification
 bundling-a-workflow
 checking-results
+simple-linear-regression
+description
+how-it-works
+evaluating-validity
+evaluating-fit
+residual-standard-error
+r2-statistic
+example
+references

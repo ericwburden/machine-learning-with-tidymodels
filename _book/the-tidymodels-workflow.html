@@ -26,7 +26,7 @@ syntax and workflow for leveraging these techniques.</p>" />
 <meta name="author" content="Eric Burden" />
 
 
-<meta name="date" content="2022-10-14" />
+<meta name="date" content="2022-10-18" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -34,7 +34,7 @@ syntax and workflow for leveraging these techniques.</p>" />
   
   
 <link rel="prev" href="index.html"/>
-
+<link rel="next" href="simple-linear-regression.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -158,7 +158,7 @@ div.csl-indent {
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./">A Minimal Book Example</a></li>
+<li><a href="./">Notes on Tidymodels</a></li>
 
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> About</a>
@@ -184,6 +184,19 @@ div.csl-indent {
 <li class="chapter" data-level="2.3.5" data-path="the-tidymodels-workflow.html"><a href="the-tidymodels-workflow.html#checking-results"><i class="fa fa-check"></i><b>2.3.5</b> Checking Results</a></li>
 </ul></li>
 </ul></li>
+<li class="chapter" data-level="3" data-path="simple-linear-regression.html"><a href="simple-linear-regression.html"><i class="fa fa-check"></i><b>3</b> Simple Linear Regression</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="simple-linear-regression.html"><a href="simple-linear-regression.html#description"><i class="fa fa-check"></i><b>3.1</b> Description</a></li>
+<li class="chapter" data-level="3.2" data-path="simple-linear-regression.html"><a href="simple-linear-regression.html#how-it-works"><i class="fa fa-check"></i><b>3.2</b> How it Works</a></li>
+<li class="chapter" data-level="3.3" data-path="simple-linear-regression.html"><a href="simple-linear-regression.html#evaluating-validity"><i class="fa fa-check"></i><b>3.3</b> Evaluating Validity</a></li>
+<li class="chapter" data-level="3.4" data-path="simple-linear-regression.html"><a href="simple-linear-regression.html#evaluating-fit"><i class="fa fa-check"></i><b>3.4</b> Evaluating Fit</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="simple-linear-regression.html"><a href="simple-linear-regression.html#residual-standard-error"><i class="fa fa-check"></i><b>3.4.1</b> Residual Standard Error</a></li>
+<li class="chapter" data-level="3.4.2" data-path="simple-linear-regression.html"><a href="simple-linear-regression.html#r2-statistic"><i class="fa fa-check"></i><b>3.4.2</b> <span class="math inline">\(R^2\)</span> Statistic</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="simple-linear-regression.html"><a href="simple-linear-regression.html#example"><i class="fa fa-check"></i><b>3.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>4</b> References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -344,28 +357,28 @@ show below:</p>
 <span id="cb11-4"><a href="the-tidymodels-workflow.html#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(example_recipe)</span>
 <span id="cb11-5"><a href="the-tidymodels-workflow.html#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(example_model)</span>
 <span id="cb11-6"><a href="the-tidymodels-workflow.html#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> <span class="fu">training</span>(mtcars_split)))</span></code></pre></div>
-<pre><code>## ══ Workflow [trained] ══════════════════════════════════════════════════════════════════════════════
+<pre><code>## ══ Workflow [trained] ═══════════════════════════════════════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: linear_reg()
 ## 
-## ── Preprocessor ────────────────────────────────────────────────────────────────────────────────────
+## ── Preprocessor ─────────────────────────────────────────────────────────────────────────────────────
 ## 3 Recipe Steps
 ## 
 ## • step_mutate_at()
 ## • step_log()
 ## • step_interact()
 ## 
-## ── Model ───────────────────────────────────────────────────────────────────────────────────────────
+## ── Model ────────────────────────────────────────────────────────────────────────────────────────────
 ## 
 ## Call:  stats::glm(formula = ..y ~ ., family = stats::gaussian, data = data)
 ## 
 ## Coefficients:
 ## (Intercept)         cyl6         cyl8         disp           hp           wt    disp_x_hp  
-##    200.0310      -0.7617      -1.8367     -31.3085     -32.7479      -2.2093       5.9062  
+##    154.3055      -0.4723       0.3221     -19.8946     -22.9603      -2.5458       3.5182  
 ## 
 ## Degrees of Freedom: 23 Total (i.e. Null);  17 Residual
-## Null Deviance:       747.4 
-## Residual Deviance: 92.33     AIC: 116.4</code></pre>
+## Null Deviance:       935 
+## Residual Deviance: 92.01     AIC: 116.4</code></pre>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="the-tidymodels-workflow.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to training data</span></span>
 <span id="cb13-2"><a href="the-tidymodels-workflow.html#cb13-2" aria-hidden="true" tabindex="-1"></a>example_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(example_workflow, <span class="fu">testing</span>(mtcars_split))</span>
 <span id="cb13-3"><a href="the-tidymodels-workflow.html#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -374,9 +387,9 @@ show below:</p>
 <pre><code>## # A tibble: 3 × 3
 ##   .metric .estimator .estimate
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-## 1 rmse    standard       2.44 
-## 2 rsq     standard       0.786
-## 3 mae     standard       2.31</code></pre>
+## 1 rmse    standard       2.09 
+## 2 rsq     standard       0.934
+## 3 mae     standard       1.69</code></pre>
 <p>To the untrained eye, it may appear that all the functions used in this code are from a
 common library, given the similarity in their usage and the ease with which the outputs
 of one operation are passed along to the next, but there are actually at least five
@@ -422,35 +435,6 @@ the model, make predictions, or other operations.</p>
 <h3><span class="header-section-number">2.3.5</span> Checking Results<a href="the-tidymodels-workflow.html#checking-results" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>In this step, the <code>yardstick</code> <span class="citation">(<a href="#ref-yardstick" role="doc-biblioref">Kuhn, Vaughan, and Hvitfeldt 2022</a>)</span> package is used to measure model performance.</p>
 
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div class="csl-entry">
-Bache, Stefan Milton, and Hadley Wickham. 2022. <span>“Magrittr: A Forward-Pipe Operator for r.”</span> <a href="https://CRAN.R-project.org/package=magrittr">https://CRAN.R-project.org/package=magrittr</a>.
-</div>
-<div class="csl-entry">
-Kuhn, Max, and Davis Vaughan. 2022. <span>“Parsnip: A Common API to Modeling and Analysis Functions.”</span> <a href="https://CRAN.R-project.org/package=parsnip">https://CRAN.R-project.org/package=parsnip</a>.
-</div>
-<div class="csl-entry">
-Kuhn, Max, Davis Vaughan, and Emil Hvitfeldt. 2022. <span>“Yardstick: Tidy Characterizations of Model Performance.”</span> <a href="https://CRAN.R-project.org/package=yardstick">https://CRAN.R-project.org/package=yardstick</a>.
-</div>
-<div class="csl-entry">
-Kuhn, Max, and Hadley Wickham. 2022. <span>“Recipes: Preprocessing and Feature Engineering Steps for Modeling.”</span> <a href="https://CRAN.R-project.org/package=recipes">https://CRAN.R-project.org/package=recipes</a>.
-</div>
-<div class="csl-entry">
-Silge, Julia, Fanny Chow, Max Kuhn, and Hadley Wickham. 2022. <span>“Rsample: General Resampling Infrastructure.”</span> <a href="https://CRAN.R-project.org/package=rsample">https://CRAN.R-project.org/package=rsample</a>.
-</div>
-<div class="csl-entry">
-Vaughan, Davis, and Simon Couch. 2022. <span>“Workflows: Modeling Workflows.”</span> <a href="https://CRAN.R-project.org/package=workflows">https://CRAN.R-project.org/package=workflows</a>.
-</div>
-<div class="csl-entry">
-Wickham, Hadley. 2014. <span>“Tidy Data.”</span> <em>Journal of Statistical Software</em> 59 (10): 1–23. <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.
-</div>
-<div class="csl-entry">
-———. 2022. <span>“The Tidy Tools Manifesto.”</span> <em>Tidyverse.tidyverse.org</em>, October. <a href="https://tidyverse.tidyverse.org/articles/manifesto.html">https://tidyverse.tidyverse.org/articles/manifesto.html</a>.
-</div>
-<div class="csl-entry">
-Wickham, Hadley, and Garrett Grolemund. 2017. <em>R for Data Science</em>. O’Reilly.
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -489,8 +473,8 @@ Wickham, Hadley, and Garrett Grolemund. 2017. <em>R for Data Science</em>. O’R
           </div>
         </div>
       </div>
-<a href="index.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="index.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="simple-linear-regression.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -521,7 +505,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/USERNAME/REPO/edit/BRANCH/01-the-tidymodels-workflow.Rmd",
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/chapters/01-the-tidymodels-workflow.Rmd",
 "text": "Edit"
 },
 "history": {
@@ -544,6 +528,20 @@ gitbook.start({
 });
 </script>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/latest.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 </body>
 
 </html>
