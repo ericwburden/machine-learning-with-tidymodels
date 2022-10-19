@@ -5,9 +5,9 @@ editor_options:
 bibliography: references.bib
 ---
 
-# Simple Linear Regression
+# Simple Linear Regression {#chapter-3}
 
-## Description
+## Description {#ch3-description}
 
 An approach for predicting a dependent (response) value $Y$ based on a single
 independent (predictor) value $X$, given that there is some proportional linear
@@ -26,7 +26,7 @@ the *Residual Sum of Squares*.[^1]
 [^1]: The sum of the squares of all the residuals in a given range, such that
     $RSS = e_1^2 + e_2^2 + … + e_n^2$.
 
-## How it Works
+## How it Works {#ch3-how-it-works}
 
 Given that the goal is to estimate the *slope* and *intercept* of the linear formula
 representation and that we have a series of $X/Y$ observations, the values of $\beta_0$
@@ -63,7 +63,7 @@ ggplot(mtcars, aes(hp, mpg)) +
 So, for a single predictor variable, *slope* and *intercept* can be estimated by a
 *relatively* straightforward algorithm.
 
-## Evaluating Validity
+## Evaluating Validity {#ch3-evaluating-validity}
 
 It is possible to estimate the *Standard Error*[^2]
 ([[Definitions#\^72c250\|definition]]) of a model using the formulae below:
@@ -139,7 +139,7 @@ The important part here is that a low *p-value* indicates that your model fit is
 actually, applicable for the data you have applied the model to, which is ultimately the
 part we are interested in.
 
-## Evaluating Fit
+## Evaluating Fit {#ch3-evaluating-fit}
 
 In the previous section, we saw reference to $e$ as the difference between the observed
 and predicted response value for a given predictor value. For real data that can be fit
@@ -153,7 +153,7 @@ and intercept have been estimated, can be determined from the *residual standard
 (which we calculated previously) and the $R^2$ statistic. Of the two, the $R^2$
 statistic is more useful and easily understood.
 
-### Residual Standard Error
+### Residual Standard Error {#ch3-residual-standard-error}
 
 The *residual standard error* (RSE), that is, the standard error for the observed
 residuals from the linear regression fit, is an estimate of the standard deviation of
@@ -166,7 +166,7 @@ In general, a smaller RSE indicates a better fit of the data. RSE, however, is a
 absolute measure of the lack of fit measured in the same units as $Y$, indicating how
 far off any given predicted $Y$ value may be.
 
-### $R^2$ Statistic
+### $R^2$ Statistic {#ch3-rsq-statistic}
 
 Contrasted to RSE, $R^2$ represents the *proportion* of variance explained by the error
 term and is always a value between 0 and 1. It can be calculated by:
@@ -181,7 +181,7 @@ $Y$ that can be explained using $X$. Thus, an $R^2$ close to 1 indicates a linea
 regression fit where most of the variability in the response is explained by the
 regression.
 
-## Example
+## Example {#ch3-example}
 
 Now, with an understanding of the underlying math and relevant statistics, we can fit a
 simple linear model to the example dataset we've used thus far, that is: estimating the
@@ -232,3 +232,32 @@ By default, `yardstick` provides three metrics for a simple linear regression mo
 Error](https://en.wikipedia.org/wiki/Root-mean-square_deviation), `mae` is [Mean
 Absolute Error](https://en.wikipedia.org/wiki/Mean_absolute_error), and `rsq` is $R^2$,
 our preferred metric for determining model fit.
+
+## Considerations {#ch3-considerations}
+
+### Limits of Applicability {#ch3-limits-of-applicability}
+
+Predictions made using a linear regression model are *most* accurate when made within
+the ranges of the observed data used to build the model. This presents a difficulty
+when, for example, attempting to predict future results. Say, you want to understand
+what may happen to program participation (`Y`) if the budget for your program (`X`) is
+increased beyond previous levels. The further beyond the previous maximum you increase
+`X`, the less likely this model is to be accurate.
+
+### Outliers {#ch3-outliers}
+
+The presence of outliers, or observations with an unusual response value, in the data
+can have an outsized impact on quality measures like RSE and $R^2$, while not
+necessarily having an equivalent impact on the fitted model parameters. Plotting
+*studentized residuals* can help reveal outliers. Typically, observations whose
+studentized residuals are greater than 3 should be examined and considered for
+exclusion.
+
+### High-leverage points {#ch3-high-leverage-points}
+
+Contrasted to outliers, high-leverage points have unusual *predictor* values. These
+values can have an outsized impact on the fit of the model. They can be detected by
+calculating the *leverage statistic*. If an observation has a leverage statistic that
+greatly exceeds $(p+1)/n$, then it may be a high-leverage point. Plotting the
+studentized residual vs the leverage statistic for each observation can be used to spot
+outliers and high leverage points simultaneously.

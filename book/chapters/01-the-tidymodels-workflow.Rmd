@@ -2,11 +2,12 @@
 editor_options: 
   markdown: 
     wrap: 88
+bibliography: references.bib
 ---
 
-# The Tidymodels Workflow
+# The Tidymodels Workflow {#chapter-2}
 
-## About Tidymodels
+## About Tidymodels {#ch2-about-tidymodels}
 
 `tidymodels` is an R meta-package, meaning it is essentially a bundle of R packages
 organized around a common theme. In this case, the theme is "modeling and machine
@@ -26,7 +27,7 @@ is[@wickham2022]:
 -   Embrace functional programming
 -   Design for humans
 
-### Re-use existing data structures
+### Re-use existing data structures {#ch2-reuse-existing-data-structures}
 
 Where possible, `tidyverse` and, by extension, `tidymodels` packages rely on common data
 structures, typically a `tibble` or `data.frame` (a `tibble` is essentially an improved
@@ -37,7 +38,7 @@ packages should behave as expected by someone who is familiar with base-R data
 structures. Data frames should be "tidy", consisting of variables in columns and
 observations in rows[@JSSv059i10].
 
-### Compose simple functions with pipes
+### Compose simple functions with pipes {#ch2-simple-functions-with-pipes}
 
 The `magrittr` library[@magrittr] has long provided a "pipe" (`%>%`) operator in R. More
 recently, a pipe operator (`|>`) has been introduced to the language itself. There are
@@ -89,14 +90,14 @@ sensible function naming and organization. The trade-off is that the programmer 
 be careful not to take multiple piped operations *too* far, breaking up long series of
 pipes with *some* intermediate variables as appropriate.
 
-### Embrace functional programming
+### Embrace functional programming {#ch2-embrace-functional-programming}
 
 There's a lot to say about what functional programming actually *is*, but in this
 context it mostly means: immutable objects and copy-on-modify semantics, the frequent
 use of "pure" functions that do not have side-effects, using generic functions where
 possible and appropriate, and abstracting over loops in a more "iterator-like" fashion.
 
-### Design for humans
+### Design for humans {#ch2-design-for-humans}
 
 This is a bit subjective, but the `tidyverse` and `tidymodels` strive to provide APIs
 that are *intuitive* for human users and friendly to the IDE such that autocomplete is a
@@ -106,7 +107,7 @@ grouping function names under common prefixes like [`str_subset`, `str_detect`,
 like [`subset_str`, `detect_str`, `extract_str`] and [`model_add`, `recipe_add`,
 `forumal_add`]or the like.
 
-## Philosophy in Practice
+## Philosophy in Practice {ch2-philosophy-in-practice}
 
 These pieces of `tidyverse` philosophy adopted by `tidymodels` yield a common way of
 working with and thinking about code written using the `tidymodels` collection of
@@ -160,7 +161,7 @@ of one operation are passed along to the next, but there are actually at least f
 different R libraries at play here! This is a key benefit of `tidymodels`, the bundled
 packages work seamlessly together to provide a consistent developer experience.
 
-## Workflow Steps
+## Workflow Steps {#ch2-workflow-steps}
 
 The typical steps involved in using `tidymodels` to train and work with ML models are
 described below. These steps may be undertaken in a different order than listed here and
@@ -168,7 +169,7 @@ individual steps may not be as cleanly separated as indicated. There may be addi
 steps for training and testing multiple models or other complex tasks, but the following
 is a good, general guide.
 
-### Data Splitting
+### Data Splitting {#ch2-data-splitting}
 
 In the first step, you'll primary use the `rsample` [@rsample] package to divide up the
 data for training, validating, and testing the model. At a minimum, this generally
@@ -177,25 +178,25 @@ many different models, can be trained on the *training* sample, but the *testing
 should be used only once, to validate and measure model performance on "real" data at
 the end. You can also set up your data for re-sampling in this step.
 
-### Data Preparation
+### Data Preparation {#ch2-data-preparation}
 
 The next step consists of creating a specification for data pre-processing using the
 `recipes` [@recipes] package. This can include a number of steps, including specifying
 the relationships between the response and predictor variables, data cleaning,
 transforming predictors, etc.
 
-### Model Specification
+### Model Specification {#ch2-model-specification}
 
 In this step, the `parsnip` [@parsnip] package is typically used to create a model
 specification. This includes indicating the type of the model, the model engine, the
 model mode, and providing relevant parameters.
 
-### Bundling a Workflow
+### Bundling a Workflow {#ch2-bundling-a-workflow}
 
 This step utilizes the `workflows` [@workflows] package to bundle together the recipe
 and model specifications into a single *workflow object*, which can then be used to fit
 the model, make predictions, or other operations.
 
-### Checking Results
+### Checking Results {#ch2-checking-results}
 
 In this step, the `yardstick` [@yardstick] package is used to measure model performance.
