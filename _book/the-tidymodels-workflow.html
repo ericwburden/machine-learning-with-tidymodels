@@ -374,11 +374,11 @@ show below:</p>
 ## 
 ## Coefficients:
 ## (Intercept)         cyl6         cyl8         disp           hp           wt    disp_x_hp  
-##    154.3055      -0.4723       0.3221     -19.8946     -22.9603      -2.5458       3.5182  
+##     196.895        1.868        1.300      -29.082      -31.105       -1.404        5.073  
 ## 
 ## Degrees of Freedom: 23 Total (i.e. Null);  17 Residual
-## Null Deviance:       935 
-## Residual Deviance: 92.01     AIC: 116.4</code></pre>
+## Null Deviance:       906.9 
+## Residual Deviance: 72.73     AIC: 110.7</code></pre>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="the-tidymodels-workflow.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to training data</span></span>
 <span id="cb13-2"><a href="the-tidymodels-workflow.html#cb13-2" aria-hidden="true" tabindex="-1"></a>example_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(example_workflow, <span class="fu">testing</span>(mtcars_split))</span>
 <span id="cb13-3"><a href="the-tidymodels-workflow.html#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -387,9 +387,9 @@ show below:</p>
 <pre><code>## # A tibble: 3 × 3
 ##   .metric .estimator .estimate
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-## 1 rmse    standard       2.09 
-## 2 rsq     standard       0.934
-## 3 mae     standard       1.69</code></pre>
+## 1 rmse    standard       2.98 
+## 2 rsq     standard       0.712
+## 3 mae     standard       2.49</code></pre>
 <p>To the untrained eye, it may appear that all the functions used in this code are from a
 common library, given the similarity in their usage and the ease with which the outputs
 of one operation are passed along to the next, but there are actually at least five
