@@ -227,7 +227,8 @@ data set. But, how good is the fit?
 metrics(simple_linear_predictions, mpg, .pred)
 ```
 
-By default, `yardstick` provides three metrics. `rmse` is [Root-Mean-Square
+By default, `yardstick` provides three metrics for a simple linear regression model.
+`rmse` is [Root-Mean-Square
 Error](https://en.wikipedia.org/wiki/Root-mean-square_deviation), `mae` is [Mean
-Absolute Error](<https://en.wikipedia.org/wiki/Mean_absolute_error>) `rsq` is $R^2$, our
-preferred metric for determining model fit.
+Absolute Error](https://en.wikipedia.org/wiki/Mean_absolute_error), and `rsq` is $R^2$,
+our preferred metric for determining model fit.

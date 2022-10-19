@@ -26,7 +26,7 @@ syntax and workflow for leveraging these techniques.</p>" />
 <meta name="author" content="Eric Burden" />
 
 
-<meta name="date" content="2022-10-18" />
+<meta name="date" content="2022-10-19" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -91,35 +91,30 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { color: #008000; } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
 code span.er { color: #ff0000; font-weight: bold; } /* Error */
 code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { color: #008000; font-weight: bold; } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
 </style>
 
 <style type="text/css">
@@ -374,11 +369,11 @@ show below:</p>
 ## 
 ## Coefficients:
 ## (Intercept)         cyl6         cyl8         disp           hp           wt    disp_x_hp  
-##     196.895        1.868        1.300      -29.082      -31.105       -1.404        5.073  
+##      89.680       -3.679       -4.521      -10.369       -8.644       -1.836        1.405  
 ## 
 ## Degrees of Freedom: 23 Total (i.e. Null);  17 Residual
-## Null Deviance:       906.9 
-## Residual Deviance: 72.73     AIC: 110.7</code></pre>
+## Null Deviance:       1060 
+## Residual Deviance: 69.29     AIC: 109.6</code></pre>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="the-tidymodels-workflow.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to training data</span></span>
 <span id="cb13-2"><a href="the-tidymodels-workflow.html#cb13-2" aria-hidden="true" tabindex="-1"></a>example_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(example_workflow, <span class="fu">testing</span>(mtcars_split))</span>
 <span id="cb13-3"><a href="the-tidymodels-workflow.html#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -387,9 +382,9 @@ show below:</p>
 <pre><code>## # A tibble: 3 × 3
 ##   .metric .estimator .estimate
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-## 1 rmse    standard       2.98 
-## 2 rsq     standard       0.712
-## 3 mae     standard       2.49</code></pre>
+## 1 rmse    standard       3.50 
+## 2 rsq     standard       0.675
+## 3 mae     standard       3.03</code></pre>
 <p>To the untrained eye, it may appear that all the functions used in this code are from a
 common library, given the similarity in their usage and the ease with which the outputs
 of one operation are passed along to the next, but there are actually at least five
