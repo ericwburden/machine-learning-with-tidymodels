@@ -1,0 +1,131 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 88
+bibliography: references.bib
+---
+
+# Logistic Regression {#chapter-5}
+
+## Description {#ch5-description}
+
+An approach for predicting a the probability that response value $Y$ belongs to a
+particular *category* based on one or more predictor values $X_1, X_2, ... X_n$. The
+probability will always lie between 0 (no chance) and 1 (absolute certainty) and can be
+given by the following *logistic function* for the case with a single predictor
+variable:
+
+$$p(X) = \frac{e^{\beta_0 + \beta_1X}}{1 + e^{\beta_0 + \beta_1X}}$$ where
+$p(X) = Pr(Y = category|X)$, which can be read as "the probability that $Y$ is
+`category` given $X$.
+
+Unlike a linear function, this *logistic* function will not indicate a probability of an
+observation belonging to a particular category as negative or greater than 1.
+Determining whether to treat a particular observation as belonging to a particular
+category can be made on the basis of the probability returned by this function. It may
+be reasonable to use a 50% threshold in many cases ($p(X) > 0.5$), but an analyst may
+want to be adjust this threshold to meet business needs. You may wish to raise the
+threshold to reduce false positive classifications or lower it to reduce false negative
+classifications.
+
+## How it Works {#ch5-how-it-works}
+
+A careful observer may not some similarities in the exponents of the formula above and
+the linear formula discussed in previous chapters. A bit of manipulation yields:
+
+$$\frac{p(X)}{1 - p(X)} = e^{\beta_0 + \beta_1X}$$
+
+where the $\frac{p(X)}{1 - p(X)}$ term is labeled as the *odds* of the event, such that
+an *odds* of $1/4$ yields $p(X) = 0.2$ and an *odds* of $9$ yields $p(X) = 0.9$. You can
+confirm this by noting that $\frac{0.9}{1 - 0.9} = 9$. Taking the logarithm of both
+sides yields:
+
+$$\ln{ \left( \frac{p(X)}{1 - p(X)} \right) } = \beta_0 + \beta_1X$$
+
+The left-hand side of that equation is called the *log odds* or *logit*. Now, our
+equation looks *eerily* similar to the linear equation because, in fact, the
+relationship between "the log odds that the response falls into a certain category given
+$X$" and $X$ is linear. That is, for one unit change in $X$, the log odds that the
+response falls into the indicated category changes by a constant amount $\beta_1$. This
+behavior can be extended to the case of multiple predictor variables in a manner
+analogous to what we have seen for [Linear Regression](#chapter-4):
+
+$$\ln{ \left( \frac{p(X)}{1 - p(X)} \right) } = \beta_0 + \beta_1x_1 + \,... \, + \beta_px_p$$
+
+This model can also be extended to the case where there are more than two response
+categories, known as a *multinomial logistic regression* model, like so (with a single
+predictor for simplicity):
+
+$$\ln{ \left( \frac{Pr(Y=k|X)}{Pr(Y=K|X)} \right) } = \beta_0 + \beta_1X$$ To do this,
+given that there are $K$ possible values for $Y$, one possible $K$ is chosen as the
+default, or *baseline* value. Consider the example of a model to classify flower species
+using the `iris` data set.
+
+```{r echo=FALSE}
+skimr::skim(iris)
+```
+
+If you are fitting a logistic regression to the `iris` data set to predict species, you
+may set the *baseline* to be 'virginica'. The choice of baseline is not important for
+fitting the model, but it is important for interpreting the estimated $\beta$
+coefficients, as $Pr(Y = k|X)$ is read as the probability that $Y$ is some value other
+than the baseline $k$ given $X$ and $Pr(Y=K|X)$ is the probability that $Y$ is the
+baseline value $K$ given $X$. In other works, the left-hand side is the \_log odds of
+$k$ versus $K$ given $X$. This is an interesting point, but not entirely impactful, as
+inferences or predictions based on this kind of model will be the same. Finally, this
+expression can be extended to the case of multiple response and predictor variables like
+so:
+
+$$\ln{ \left( \frac{Pr(Y=k|X=x)}{Pr(Y=K|X=x)} \right) } = \beta_0 + \beta_1x_1 + \, ... \, + \beta_px_p$$
+
+As an alternative to choosing a baseline category, the *softmax* coding of a logistic
+regression model treats all $K$ classes symmetrically, such that the log odds ratio
+between one categorical value $k$ and another $k'$ can be represented as:
+
+$$
+ln{\left( \frac{Pr(Y=k|X=x}{Pr(Y=k'|X=x)} \right) = (\beta_{k0} - \beta_{k'0}) + (\beta_{k1} - \beta{k'1})x_1 + \, ... \, + (\beta_{kp} - \beta_{k'p})x_p}
+$$
+
+Similarly to the linear case, the fit to a logistic model can be fit by an equation.
+Instead of the least squares method, logistic models are fit by a *maximum likelihood*
+method. In the simple case with one predictor and a binary response variable, the
+\_maximum likelihood function\_ attempts to estimate $\beta_0$ and $\beta_1$ in such a
+way that the predicted probability $\hat{p}(x_i)$ matches the observed result as much as
+possible. This means that, when $Y$ == `category` $\hat{p}(x_i)$ should be very close to
+1 and when $Y$ != `category` $\hat{p}(x_i)$ should be very close to 0. This is
+accomplished using a *likelihood function* of the form:
+
+$$\ell(\beta_0, \beta_1) = \prod_{i:y_i = 1}{p(x_i)} \prod_{i':y_{i'}=0}{(1 - p(x_{i'}))}$$
+
+## Evaluating Validity {#ch5-evaluating-validity}
+
+As can be seen from the underlying math, there are several assumptions inherent in a
+logistic regression model, regardless of the number of predictor variables or response
+categories:
+
+-   Since the contribution by each set of predictors in each observation is calculated
+    independently for each response, it is assume that *each observation is
+    independent*.
+
+-   Each predictor variable is assumed to be independent as well, that is, there is no
+    [collinearity](#ch4-collinearity) between predictors. This can be detected through
+    exploratory visualization using a scatterplot matrix or by calculating *variance
+    inflation factors* via `car::vif` or other methods.
+
+-   Just as with linear regression models, the goodness-of-fit can be negatively
+    impacted by [outliers](#ch3-outliers) or [high-leverage
+    points](#ch3-high-leverage-points).
+
+-   Finally, as has been demonstrated, logistic regression assumes a linear relationship
+    between the log odds of the response belonging to a given category and the predictor
+    variables. This can be a bit more complicated to assess than in the linear case, but
+    a Box-Tidwell test (`car::boxTidwell`) or scatter plot can help. These methods are
+    demonstrated in the [Example](ch5-example).
+
+## Evaluating Fit {#ch5-evaluating-fit}
+
+*This section is currently under construction*
+
+## Example {#ch5-example}
+
+*This section is currently under construction*

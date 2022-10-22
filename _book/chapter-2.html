@@ -26,7 +26,7 @@ syntax and workflow for leveraging these techniques.</p>" />
 <meta name="author" content="Eric Burden" />
 
 
-<meta name="date" content="2022-10-19" />
+<meta name="date" content="2022-10-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -169,7 +169,7 @@ div.csl-indent {
 <li class="chapter" data-level="2.1.3" data-path="chapter-2.html"><a href="chapter-2.html#ch2-embrace-functional-programming"><i class="fa fa-check"></i><b>2.1.3</b> Embrace functional programming</a></li>
 <li class="chapter" data-level="2.1.4" data-path="chapter-2.html"><a href="chapter-2.html#ch2-design-for-humans"><i class="fa fa-check"></i><b>2.1.4</b> Design for humans</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="chapter-2.html"><a href="chapter-2.html#philosophy-in-practice-ch2-philosophy-in-practice"><i class="fa fa-check"></i><b>2.2</b> Philosophy in Practice {ch2-philosophy-in-practice}</a></li>
+<li class="chapter" data-level="2.2" data-path="chapter-2.html"><a href="chapter-2.html#ch2-philosophy-in-practice"><i class="fa fa-check"></i><b>2.2</b> Philosophy in Practice</a></li>
 <li class="chapter" data-level="2.3" data-path="chapter-2.html"><a href="chapter-2.html#ch2-workflow-steps"><i class="fa fa-check"></i><b>2.3</b> Workflow Steps</a>
 <ul>
 <li class="chapter" data-level="2.3.1" data-path="chapter-2.html"><a href="chapter-2.html#ch2-data-splitting"><i class="fa fa-check"></i><b>2.3.1</b> Data Splitting</a></li>
@@ -218,7 +218,15 @@ div.csl-indent {
 <li class="chapter" data-level="4.7.5" data-path="chapter-4.html"><a href="chapter-4.html#ch4-potential-issues"><i class="fa fa-check"></i><b>4.7.5</b> Potential Issues</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>5</b> References</a></li>
+<li class="chapter" data-level="5" data-path="chapter-5.html"><a href="chapter-5.html"><i class="fa fa-check"></i><b>5</b> Logistic Regression</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="chapter-5.html"><a href="chapter-5.html#ch5-description"><i class="fa fa-check"></i><b>5.1</b> Description</a></li>
+<li class="chapter" data-level="5.2" data-path="chapter-5.html"><a href="chapter-5.html#ch5-how-it-works"><i class="fa fa-check"></i><b>5.2</b> How it Works</a></li>
+<li class="chapter" data-level="5.3" data-path="chapter-5.html"><a href="chapter-5.html#ch5-evaluating-validity"><i class="fa fa-check"></i><b>5.3</b> Evaluating Validity</a></li>
+<li class="chapter" data-level="5.4" data-path="chapter-5.html"><a href="chapter-5.html#ch5-evaluating-fit"><i class="fa fa-check"></i><b>5.4</b> Evaluating Fit</a></li>
+<li class="chapter" data-level="5.5" data-path="chapter-5.html"><a href="chapter-5.html#ch5-example"><i class="fa fa-check"></i><b>5.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>6</b> References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -327,8 +335,8 @@ like [<code>subset_str</code>, <code>detect_str</code>, <code>extract_str</code>
 <code>forumal_add</code>]or the like.</p>
 </div>
 </div>
-<div id="philosophy-in-practice-ch2-philosophy-in-practice" class="section level2 hasAnchor" number="2.2">
-<h2><span class="header-section-number">2.2</span> Philosophy in Practice {ch2-philosophy-in-practice}<a href="chapter-2.html#philosophy-in-practice-ch2-philosophy-in-practice" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="ch2-philosophy-in-practice" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> Philosophy in Practice<a href="chapter-2.html#ch2-philosophy-in-practice" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p>These pieces of <code>tidyverse</code> philosophy adopted by <code>tidymodels</code> yield a common way of
 working with and thinking about code written using the <code>tidymodels</code> collection of
 packages. The most prominent example of this is the <code>tidymodels</code> workflow, or, rather,
@@ -379,18 +387,18 @@ show below:</p>
 <span id="cb11-4"><a href="chapter-2.html#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(example_recipe)</span>
 <span id="cb11-5"><a href="chapter-2.html#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(example_model)</span>
 <span id="cb11-6"><a href="chapter-2.html#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> <span class="fu">training</span>(mtcars_split)))</span></code></pre></div>
-<pre><code>## ══ Workflow [trained] ═══════════════════════════════════════════════════════════════════════════════
+<pre><code>## ══ Workflow [trained] ════════════════════════════════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: linear_reg()
 ## 
-## ── Preprocessor ─────────────────────────────────────────────────────────────────────────────────────
+## ── Preprocessor ──────────────────────────────────────────────────────────────────────────────
 ## 3 Recipe Steps
 ## 
 ## • step_mutate_at()
 ## • step_log()
 ## • step_interact()
 ## 
-## ── Model ────────────────────────────────────────────────────────────────────────────────────────────
+## ── Model ─────────────────────────────────────────────────────────────────────────────────────
 ## 
 ## Call:  stats::glm(formula = ..y ~ ., family = stats::gaussian, data = data)
 ## 
@@ -527,7 +535,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/USERNAME/REPO/edit/BRANCH/chapters/01-the-tidymodels-workflow.Rmd",
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/chapters/ch02-the-tidymodels-workflow.Rmd",
 "text": "Edit"
 },
 "history": {
