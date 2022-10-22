@@ -1,3 +1,4 @@
+tab:unnamed-chunk-12
 chapter-1
 ch1-software_used
 chapter-2
@@ -6,7 +7,7 @@ ch2-reuse-existing-data-structures
 ch2-simple-functions-with-pipes
 ch2-embrace-functional-programming
 ch2-design-for-humans
-philosophy-in-practice-ch2-philosophy-in-practice
+ch2-philosophy-in-practice
 ch2-workflow-steps
 ch2-data-splitting
 ch2-data-preparation
@@ -46,4 +47,10 @@ ch4-non-constant-variance-of-error
 ch4-outliers
 ch4-high-leverage-points
 ch4-collinearity
+chapter-5
+ch5-description
+ch5-how-it-works
+ch5-evaluating-validity
+ch5-evaluating-fit
+ch5-example
 references

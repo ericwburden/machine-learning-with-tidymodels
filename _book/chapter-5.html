@@ -4,12 +4,12 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 6 References | Machine Learning with TidyModels</title>
+  <title>Chapter 5 Logistic Regression | Machine Learning with TidyModels</title>
   <meta name="description" content="This is a primer on various ML modeling techniques and the tidymodels</code>
 syntax and workflow for leveraging these techniques.</p>" />
   <meta name="generator" content="bookdown 0.29 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 6 References | Machine Learning with TidyModels" />
+  <meta property="og:title" content="Chapter 5 Logistic Regression | Machine Learning with TidyModels" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is a primer on various ML modeling techniques and the tidymodels</code>
@@ -17,7 +17,7 @@ syntax and workflow for leveraging these techniques.</p>" />
   <meta name="github-repo" content="ericwburden/machine-learning-with-tidymodels" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 6 References | Machine Learning with TidyModels" />
+  <meta name="twitter:title" content="Chapter 5 Logistic Regression | Machine Learning with TidyModels" />
   
   <meta name="twitter:description" content="This is a primer on various ML modeling techniques and the tidymodels</code>
 syntax and workflow for leveraging these techniques.</p>" />
@@ -33,8 +33,8 @@ syntax and workflow for leveraging these techniques.</p>" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="chapter-5.html"/>
-
+<link rel="prev" href="chapter-4.html"/>
+<link rel="next" href="references.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -247,73 +247,276 @@ div.csl-indent {
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="references" class="section level1 hasAnchor" number="6">
-<h1><span class="header-section-number">Chapter 6</span> References<a href="references.html#references" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div class="csl-entry">
-Bache, Stefan Milton, and Hadley Wickham. 2022. <span>“Magrittr: A Forward-Pipe Operator for r.”</span> <a href="https://CRAN.R-project.org/package=magrittr">https://CRAN.R-project.org/package=magrittr</a>.
+<div id="chapter-5" class="section level1 hasAnchor" number="5">
+<h1><span class="header-section-number">Chapter 5</span> Logistic Regression<a href="chapter-5.html#chapter-5" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="ch5-description" class="section level2 hasAnchor" number="5.1">
+<h2><span class="header-section-number">5.1</span> Description<a href="chapter-5.html#ch5-description" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>An approach for predicting a the probability that response value <span class="math inline">\(Y\)</span> belongs to a
+particular <em>category</em> based on one or more predictor values <span class="math inline">\(X_1, X_2, ... X_n\)</span>. The
+probability will always lie between 0 (no chance) and 1 (absolute certainty) and can be
+given by the following <em>logistic function</em> for the case with a single predictor
+variable:</p>
+<p><span class="math display">\[p(X) = \frac{e^{\beta_0 + \beta_1X}}{1 + e^{\beta_0 + \beta_1X}}\]</span> where
+<span class="math inline">\(p(X) = Pr(Y = category|X)\)</span>, which can be read as “the probability that <span class="math inline">\(Y\)</span> is
+<code>category</code> given <span class="math inline">\(X\)</span>.</p>
+<p>Unlike a linear function, this <em>logistic</em> function will not indicate a probability of an
+observation belonging to a particular category as negative or greater than 1.
+Determining whether to treat a particular observation as belonging to a particular
+category can be made on the basis of the probability returned by this function. It may
+be reasonable to use a 50% threshold in many cases (<span class="math inline">\(p(X) &gt; 0.5\)</span>), but an analyst may
+want to be adjust this threshold to meet business needs. You may wish to raise the
+threshold to reduce false positive classifications or lower it to reduce false negative
+classifications.</p>
 </div>
-<div class="csl-entry">
-Kuhn, Max, and Davis Vaughan. 2022. <span>“Parsnip: A Common API to Modeling and Analysis Functions.”</span> <a href="https://CRAN.R-project.org/package=parsnip">https://CRAN.R-project.org/package=parsnip</a>.
+<div id="ch5-how-it-works" class="section level2 hasAnchor" number="5.2">
+<h2><span class="header-section-number">5.2</span> How it Works<a href="chapter-5.html#ch5-how-it-works" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>A careful observer may not some similarities in the exponents of the formula above and
+the linear formula discussed in previous chapters. A bit of manipulation yields:</p>
+<p><span class="math display">\[\frac{p(X)}{1 - p(X)} = e^{\beta_0 + \beta_1X}\]</span></p>
+<p>where the <span class="math inline">\(\frac{p(X)}{1 - p(X)}\)</span> term is labeled as the <em>odds</em> of the event, such that
+an <em>odds</em> of <span class="math inline">\(1/4\)</span> yields <span class="math inline">\(p(X) = 0.2\)</span> and an <em>odds</em> of <span class="math inline">\(9\)</span> yields <span class="math inline">\(p(X) = 0.9\)</span>. You can
+confirm this by noting that <span class="math inline">\(\frac{0.9}{1 - 0.9} = 9\)</span>. Taking the logarithm of both
+sides yields:</p>
+<p><span class="math display">\[\ln{ \left( \frac{p(X)}{1 - p(X)} \right) } = \beta_0 + \beta_1X\]</span></p>
+<p>The left-hand side of that equation is called the <em>log odds</em> or <em>logit</em>. Now, our
+equation looks <em>eerily</em> similar to the linear equation because, in fact, the
+relationship between “the log odds that the response falls into a certain category given
+<span class="math inline">\(X\)</span>” and <span class="math inline">\(X\)</span> is linear. That is, for one unit change in <span class="math inline">\(X\)</span>, the log odds that the
+response falls into the indicated category changes by a constant amount <span class="math inline">\(\beta_1\)</span>. This
+behavior can be extended to the case of multiple predictor variables in a manner
+analogous to what we have seen for <a href="chapter-4.html#chapter-4">Linear Regression</a>:</p>
+<p><span class="math display">\[\ln{ \left( \frac{p(X)}{1 - p(X)} \right) } = \beta_0 + \beta_1x_1 + \,... \, + \beta_px_p\]</span></p>
+<p>This model can also be extended to the case where there are more than two response
+categories, known as a <em>multinomial logistic regression</em> model, like so (with a single
+predictor for simplicity):</p>
+<p><span class="math display">\[\ln{ \left( \frac{Pr(Y=k|X)}{Pr(Y=K|X)} \right) } = \beta_0 + \beta_1X\]</span> To do this,
+given that there are <span class="math inline">\(K\)</span> possible values for <span class="math inline">\(Y\)</span>, one possible <span class="math inline">\(K\)</span> is chosen as the
+default, or <em>baseline</em> value. Consider the example of a model to classify flower species
+using the <code>iris</code> data set.</p>
+<table>
+<caption><span id="tab:unnamed-chunk-12">Table 5.1: </span>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">iris</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">150</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">5</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">factor</td>
+<td align="left">1</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: factor</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col width="17%" />
+<col width="12%" />
+<col width="17%" />
+<col width="9%" />
+<col width="11%" />
+<col width="32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="left">ordered</th>
+<th align="right">n_unique</th>
+<th align="left">top_counts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Species</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">FALSE</td>
+<td align="right">3</td>
+<td align="left">set: 50, ver: 50, vir: 50</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col width="18%" />
+<col width="13%" />
+<col width="18%" />
+<col width="6%" />
+<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+<col width="6%" />
+<col width="5%" />
+<col width="6%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Sepal.Length</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">5.84</td>
+<td align="right">0.83</td>
+<td align="right">4.3</td>
+<td align="right">5.1</td>
+<td align="right">5.80</td>
+<td align="right">6.4</td>
+<td align="right">7.9</td>
+<td align="left">▆▇▇▅▂</td>
+</tr>
+<tr class="even">
+<td align="left">Sepal.Width</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3.06</td>
+<td align="right">0.44</td>
+<td align="right">2.0</td>
+<td align="right">2.8</td>
+<td align="right">3.00</td>
+<td align="right">3.3</td>
+<td align="right">4.4</td>
+<td align="left">▁▆▇▂▁</td>
+</tr>
+<tr class="odd">
+<td align="left">Petal.Length</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3.76</td>
+<td align="right">1.77</td>
+<td align="right">1.0</td>
+<td align="right">1.6</td>
+<td align="right">4.35</td>
+<td align="right">5.1</td>
+<td align="right">6.9</td>
+<td align="left">▇▁▆▇▂</td>
+</tr>
+<tr class="even">
+<td align="left">Petal.Width</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1.20</td>
+<td align="right">0.76</td>
+<td align="right">0.1</td>
+<td align="right">0.3</td>
+<td align="right">1.30</td>
+<td align="right">1.8</td>
+<td align="right">2.5</td>
+<td align="left">▇▁▇▅▃</td>
+</tr>
+</tbody>
+</table>
+<p>If you are fitting a logistic regression to the <code>iris</code> data set to predict species, you
+may set the <em>baseline</em> to be ‘virginica’. The choice of baseline is not important for
+fitting the model, but it is important for interpreting the estimated <span class="math inline">\(\beta\)</span>
+coefficients, as <span class="math inline">\(Pr(Y = k|X)\)</span> is read as the probability that <span class="math inline">\(Y\)</span> is some value other
+than the baseline <span class="math inline">\(k\)</span> given <span class="math inline">\(X\)</span> and <span class="math inline">\(Pr(Y=K|X)\)</span> is the probability that <span class="math inline">\(Y\)</span> is the
+baseline value <span class="math inline">\(K\)</span> given <span class="math inline">\(X\)</span>. In other works, the left-hand side is the _log odds of
+<span class="math inline">\(k\)</span> versus <span class="math inline">\(K\)</span> given <span class="math inline">\(X\)</span>. This is an interesting point, but not entirely impactful, as
+inferences or predictions based on this kind of model will be the same. Finally, this
+expression can be extended to the case of multiple response and predictor variables like
+so:</p>
+<p><span class="math display">\[\ln{ \left( \frac{Pr(Y=k|X=x)}{Pr(Y=K|X=x)} \right) } = \beta_0 + \beta_1x_1 + \, ... \, + \beta_px_p\]</span></p>
+<p>As an alternative to choosing a baseline category, the <em>softmax</em> coding of a logistic
+regression model treats all <span class="math inline">\(K\)</span> classes symmetrically, such that the log odds ratio
+between one categorical value <span class="math inline">\(k\)</span> and another <span class="math inline">\(k&#39;\)</span> can be represented as:</p>
+<p><span class="math display">\[
+ln{\left( \frac{Pr(Y=k|X=x}{Pr(Y=k&#39;|X=x)} \right) = (\beta_{k0} - \beta_{k&#39;0}) + (\beta_{k1} - \beta{k&#39;1})x_1 + \, ... \, + (\beta_{kp} - \beta_{k&#39;p})x_p}
+\]</span></p>
+<p>Similarly to the linear case, the fit to a logistic model can be fit by an equation.
+Instead of the least squares method, logistic models are fit by a <em>maximum likelihood</em>
+method. In the simple case with one predictor and a binary response variable, the
+_maximum likelihood function_ attempts to estimate <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\beta_1\)</span> in such a
+way that the predicted probability <span class="math inline">\(\hat{p}(x_i)\)</span> matches the observed result as much as
+possible. This means that, when <span class="math inline">\(Y\)</span> == <code>category</code> <span class="math inline">\(\hat{p}(x_i)\)</span> should be very close to
+1 and when <span class="math inline">\(Y\)</span> != <code>category</code> <span class="math inline">\(\hat{p}(x_i)\)</span> should be very close to 0. This is
+accomplished using a <em>likelihood function</em> of the form:</p>
+<p><span class="math display">\[\ell(\beta_0, \beta_1) = \prod_{i:y_i = 1}{p(x_i)} \prod_{i&#39;:y_{i&#39;}=0}{(1 - p(x_{i&#39;}))}\]</span></p>
 </div>
-<div class="csl-entry">
-Kuhn, Max, Davis Vaughan, and Emil Hvitfeldt. 2022. <span>“Yardstick: Tidy Characterizations of Model Performance.”</span> <a href="https://CRAN.R-project.org/package=yardstick">https://CRAN.R-project.org/package=yardstick</a>.
+<div id="ch5-evaluating-validity" class="section level2 hasAnchor" number="5.3">
+<h2><span class="header-section-number">5.3</span> Evaluating Validity<a href="chapter-5.html#ch5-evaluating-validity" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>As can be seen from the underlying math, there are several assumptions inherent in a
+logistic regression model, regardless of the number of predictor variables or response
+categories:</p>
+<ul>
+<li><p>Since the contribution by each set of predictors in each observation is calculated
+independently for each response, it is assume that <em>each observation is
+independent</em>.</p></li>
+<li><p>Each predictor variable is assumed to be independent as well, that is, there is no
+<a href="chapter-4.html#ch4-collinearity">collinearity</a> between predictors. This can be detected through
+exploratory visualization using a scatterplot matrix or by calculating <em>variance
+inflation factors</em> via <code>car::vif</code> or other methods.</p></li>
+<li><p>Just as with linear regression models, the goodness-of-fit can be negatively
+impacted by <a href="chapter-3.html#ch3-outliers">outliers</a> or <a href="chapter-3.html#ch3-high-leverage-points">high-leverage
+points</a>.</p></li>
+<li><p>Finally, as has been demonstrated, logistic regression assumes a linear relationship
+between the log odds of the response belonging to a given category and the predictor
+variables. This can be a bit more complicated to assess than in the linear case, but
+a Box-Tidwell test (<code>car::boxTidwell</code>) or scatter plot can help. These methods are
+demonstrated in the <a href="ch5-example">Example</a>.</p></li>
+</ul>
 </div>
-<div class="csl-entry">
-Kuhn, Max, and Hadley Wickham. 2022. <span>“Recipes: Preprocessing and Feature Engineering Steps for Modeling.”</span> <a href="https://CRAN.R-project.org/package=recipes">https://CRAN.R-project.org/package=recipes</a>.
+<div id="ch5-evaluating-fit" class="section level2 hasAnchor" number="5.4">
+<h2><span class="header-section-number">5.4</span> Evaluating Fit<a href="chapter-5.html#ch5-evaluating-fit" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><em>This section is currently under construction</em></p>
 </div>
-<div class="csl-entry">
-Robinson, David, Alex Hayes, and Simon Couch. 2022. <span>“Broom: Convert Statistical Objects into Tidy Tibbles.”</span> <a href="https://CRAN.R-project.org/package=broom">https://CRAN.R-project.org/package=broom</a>.
-</div>
-<div class="csl-entry">
-Silge, Julia, Fanny Chow, Max Kuhn, and Hadley Wickham. 2022. <span>“Rsample: General Resampling Infrastructure.”</span> <a href="https://CRAN.R-project.org/package=rsample">https://CRAN.R-project.org/package=rsample</a>.
-</div>
-<div class="csl-entry">
-Vaughan, Davis, and Simon Couch. 2022. <span>“Workflows: Modeling Workflows.”</span> <a href="https://CRAN.R-project.org/package=workflows">https://CRAN.R-project.org/package=workflows</a>.
-</div>
-<div class="csl-entry">
-Wickham, Hadley. 2014. <span>“Tidy Data.”</span> <em>Journal of Statistical Software</em> 59 (10): 1–23. <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.
-</div>
-<div class="csl-entry">
-———. 2022. <span>“The Tidy Tools Manifesto.”</span> <em>Tidyverse.tidyverse.org</em>, October. <a href="https://tidyverse.tidyverse.org/articles/manifesto.html">https://tidyverse.tidyverse.org/articles/manifesto.html</a>.
-</div>
-<div class="csl-entry">
-Wickham, Hadley, and Garrett Grolemund. 2017. <em>R for Data Science</em>. O’Reilly.
+<div id="ch5-example" class="section level2 hasAnchor" number="5.5">
+<h2><span class="header-section-number">5.5</span> Example<a href="chapter-5.html#ch5-example" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><em>This section is currently under construction</em></p>
+
 </div>
 </div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </section>
 
           </div>
         </div>
       </div>
-<a href="chapter-5.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="chapter-4.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -344,7 +547,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/USERNAME/REPO/edit/BRANCH/chapters/ch99-references.Rmd",
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/chapters/ch05-logistic-regression.Rmd",
 "text": "Edit"
 },
 "history": {

@@ -26,7 +26,7 @@ syntax and workflow for leveraging these techniques.</p>" />
 <meta name="author" content="Eric Burden" />
 
 
-<meta name="date" content="2022-10-19" />
+<meta name="date" content="2022-10-21" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -34,7 +34,7 @@ syntax and workflow for leveraging these techniques.</p>" />
   
   
 <link rel="prev" href="chapter-3.html"/>
-<link rel="next" href="references.html"/>
+<link rel="next" href="chapter-5.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -169,7 +169,7 @@ div.csl-indent {
 <li class="chapter" data-level="2.1.3" data-path="chapter-2.html"><a href="chapter-2.html#ch2-embrace-functional-programming"><i class="fa fa-check"></i><b>2.1.3</b> Embrace functional programming</a></li>
 <li class="chapter" data-level="2.1.4" data-path="chapter-2.html"><a href="chapter-2.html#ch2-design-for-humans"><i class="fa fa-check"></i><b>2.1.4</b> Design for humans</a></li>
 </ul></li>
-<li class="chapter" data-level="2.2" data-path="chapter-2.html"><a href="chapter-2.html#philosophy-in-practice-ch2-philosophy-in-practice"><i class="fa fa-check"></i><b>2.2</b> Philosophy in Practice {ch2-philosophy-in-practice}</a></li>
+<li class="chapter" data-level="2.2" data-path="chapter-2.html"><a href="chapter-2.html#ch2-philosophy-in-practice"><i class="fa fa-check"></i><b>2.2</b> Philosophy in Practice</a></li>
 <li class="chapter" data-level="2.3" data-path="chapter-2.html"><a href="chapter-2.html#ch2-workflow-steps"><i class="fa fa-check"></i><b>2.3</b> Workflow Steps</a>
 <ul>
 <li class="chapter" data-level="2.3.1" data-path="chapter-2.html"><a href="chapter-2.html#ch2-data-splitting"><i class="fa fa-check"></i><b>2.3.1</b> Data Splitting</a></li>
@@ -218,7 +218,15 @@ div.csl-indent {
 <li class="chapter" data-level="4.7.5" data-path="chapter-4.html"><a href="chapter-4.html#ch4-potential-issues"><i class="fa fa-check"></i><b>4.7.5</b> Potential Issues</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="5" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>5</b> References</a></li>
+<li class="chapter" data-level="5" data-path="chapter-5.html"><a href="chapter-5.html"><i class="fa fa-check"></i><b>5</b> Logistic Regression</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="chapter-5.html"><a href="chapter-5.html#ch5-description"><i class="fa fa-check"></i><b>5.1</b> Description</a></li>
+<li class="chapter" data-level="5.2" data-path="chapter-5.html"><a href="chapter-5.html#ch5-how-it-works"><i class="fa fa-check"></i><b>5.2</b> How it Works</a></li>
+<li class="chapter" data-level="5.3" data-path="chapter-5.html"><a href="chapter-5.html#ch5-evaluating-validity"><i class="fa fa-check"></i><b>5.3</b> Evaluating Validity</a></li>
+<li class="chapter" data-level="5.4" data-path="chapter-5.html"><a href="chapter-5.html#ch5-evaluating-fit"><i class="fa fa-check"></i><b>5.4</b> Evaluating Fit</a></li>
+<li class="chapter" data-level="5.5" data-path="chapter-5.html"><a href="chapter-5.html#ch5-example"><i class="fa fa-check"></i><b>5.5</b> Example</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>6</b> References</a></li>
 <li class="divider"></li>
 <li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
 
@@ -390,7 +398,7 @@ We can add <em>exploratory data analysis</em> steps to suss out any complicating
 <h3><span class="header-section-number">4.6.1</span> Correlated Predictors<a href="chapter-4.html#ch-correlated-predictors" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="chapter-4.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a scatterplot matrix to identify correlations</span></span>
 <span id="cb33-2"><a href="chapter-4.html#cb33-2" aria-hidden="true" tabindex="-1"></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(mtcars, <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;disp&quot;</span>, <span class="st">&quot;hp&quot;</span>, <span class="st">&quot;drat&quot;</span>, <span class="st">&quot;wt&quot;</span>, <span class="st">&quot;qsec&quot;</span>), <span class="at">progress =</span> F)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>In this <em>scatterplot matrix</em>, the bottom half of the plot shows scatterplots for each
 row/column combination, the top half includes the raw correlations and their
 significance (more asterisks == more correlation), and the central diagonal indicates a
@@ -448,17 +456,17 @@ shown below.</p>
 <span id="cb38-4"><a href="chapter-4.html#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(multiple_linear_regression_recipe)</span>
 <span id="cb38-5"><a href="chapter-4.html#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(multiple_linear_regression_model)</span>
 <span id="cb38-6"><a href="chapter-4.html#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> <span class="fu">training</span>(mtcars_split)))</span></code></pre></div>
-<pre><code>## ══ Workflow [trained] ═══════════════════════════════════════════════════════════════════════════════
+<pre><code>## ══ Workflow [trained] ════════════════════════════════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: linear_reg()
 ## 
-## ── Preprocessor ─────────────────────────────────────────────────────────────────────────────────────
+## ── Preprocessor ──────────────────────────────────────────────────────────────────────────────
 ## 2 Recipe Steps
 ## 
 ## • step_log()
 ## • step_interact()
 ## 
-## ── Model ────────────────────────────────────────────────────────────────────────────────────────────
+## ── Model ─────────────────────────────────────────────────────────────────────────────────────
 ## 
 ## Call:
 ## stats::lm(formula = ..y ~ ., data = data)
@@ -490,7 +498,7 @@ shown below.</p>
 <span id="cb42-6"><a href="chapter-4.html#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;orange&quot;</span>)</span>
 <span id="cb42-7"><a href="chapter-4.html#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Multiple Linear Regression&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Predicted&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Actual&quot;</span>)</span>
 <span id="cb42-8"><a href="chapter-4.html#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">theme_minimal</span>())</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>Looking at the performance metrics, we can see that the estimated fit of the multiple
 linear regression has a better estimated <span class="math inline">\(R^2\)</span> than the simple linear regression model
 from <a href="chapter-3.html#ch3-example">Chapter 3</a>. We shouldn’t be too overconfident here, though, adding
@@ -610,7 +618,7 @@ one of the predictors or (b) combining the collinear variables into a single pre
         </div>
       </div>
 <a href="chapter-3.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="chapter-5.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -641,7 +649,7 @@ gitbook.start({
 "size": 2
 },
 "edit": {
-"link": "https://github.com/USERNAME/REPO/edit/BRANCH/chapters/03-multiple-linear-regression.Rmd",
+"link": "https://github.com/USERNAME/REPO/edit/BRANCH/chapters/ch04-multiple-linear-regression.Rmd",
 "text": "Edit"
 },
 "history": {
