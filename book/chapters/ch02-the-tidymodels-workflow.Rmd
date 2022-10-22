@@ -107,7 +107,7 @@ grouping function names under common prefixes like [`str_subset`, `str_detect`,
 like [`subset_str`, `detect_str`, `extract_str`] and [`model_add`, `recipe_add`,
 `forumal_add`]or the like.
 
-## Philosophy in Practice {ch2-philosophy-in-practice}
+## Philosophy in Practice {#ch2-philosophy-in-practice}
 
 These pieces of `tidyverse` philosophy adopted by `tidymodels` yield a common way of
 working with and thinking about code written using the `tidymodels` collection of
