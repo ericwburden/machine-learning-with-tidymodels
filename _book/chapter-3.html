@@ -26,7 +26,7 @@ syntax and workflow for leveraging these techniques.</p>" />
 <meta name="author" content="Eric Burden" />
 
 
-<meta name="date" content="2022-10-21" />
+<meta name="date" content="2022-11-03" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -223,7 +223,11 @@ div.csl-indent {
 <li class="chapter" data-level="5.1" data-path="chapter-5.html"><a href="chapter-5.html#ch5-description"><i class="fa fa-check"></i><b>5.1</b> Description</a></li>
 <li class="chapter" data-level="5.2" data-path="chapter-5.html"><a href="chapter-5.html#ch5-how-it-works"><i class="fa fa-check"></i><b>5.2</b> How it Works</a></li>
 <li class="chapter" data-level="5.3" data-path="chapter-5.html"><a href="chapter-5.html#ch5-evaluating-validity"><i class="fa fa-check"></i><b>5.3</b> Evaluating Validity</a></li>
-<li class="chapter" data-level="5.4" data-path="chapter-5.html"><a href="chapter-5.html#ch5-evaluating-fit"><i class="fa fa-check"></i><b>5.4</b> Evaluating Fit</a></li>
+<li class="chapter" data-level="5.4" data-path="chapter-5.html"><a href="chapter-5.html#ch5-evaluating-fit"><i class="fa fa-check"></i><b>5.4</b> Evaluating Fit</a>
+<ul>
+<li class="chapter" data-level="5.4.1" data-path="chapter-5.html"><a href="chapter-5.html#ch5-binomial-logistic-regression"><i class="fa fa-check"></i><b>5.4.1</b> Binomial Logistic Regression</a></li>
+<li class="chapter" data-level="5.4.2" data-path="chapter-5.html"><a href="chapter-5.html#ch5-multinomial-logistic-regression"><i class="fa fa-check"></i><b>5.4.2</b> Multinomial Logistic Regression</a></li>
+</ul></li>
 <li class="chapter" data-level="5.5" data-path="chapter-5.html"><a href="chapter-5.html#ch5-example"><i class="fa fa-check"></i><b>5.5</b> Example</a></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>6</b> References</a></li>
@@ -292,7 +296,7 @@ and <span class="math inline">\(\beta_1\)</span> can be estimated via</p>
 <span id="cb15-20"><a href="chapter-3.html#cb15-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;Miles/Gallon&quot;</span></span>
 <span id="cb15-21"><a href="chapter-3.html#cb15-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb15-22"><a href="chapter-3.html#cb15-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>So, for a single predictor variable, <em>slope</em> and <em>intercept</em> can be estimated by a
 <em>relatively</em> straightforward algorithm.</p>
 </div>
@@ -407,14 +411,14 @@ fuel efficiency of a vehicle from its horsepower rating.</p>
 <span id="cb25-4"><a href="chapter-3.html#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(simple_linear_recipe)</span>
 <span id="cb25-5"><a href="chapter-3.html#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(simple_linear_model)</span>
 <span id="cb25-6"><a href="chapter-3.html#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> mtcars))</span></code></pre></div>
-<pre><code>## ══ Workflow [trained] ════════════════════════════════════════════════════════════════════════
+<pre><code>## ══ Workflow [trained] ══════════════════════════════════════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: linear_reg()
 ## 
-## ── Preprocessor ──────────────────────────────────────────────────────────────────────────────
+## ── Preprocessor ────────────────────────────────────────────────────────────────────────────────────
 ## 0 Recipe Steps
 ## 
-## ── Model ─────────────────────────────────────────────────────────────────────────────────────
+## ── Model ───────────────────────────────────────────────────────────────────────────────────────────
 ## 
 ## Call:
 ## stats::lm(formula = ..y ~ ., data = data)
@@ -493,8 +497,7 @@ Robinson, David, Alex Hayes, and Simon Couch. 2022. <span>“Broom: Convert Stat
 <div class="footnotes">
 <hr />
 <ol start="1">
-<li id="fn1"><p>The sum of the squares of all the residuals in a given range, such that
-<span class="math inline">\(RSS = e_1^2 + e_2^2 + … + e_n^2\)</span>.<a href="chapter-3.html#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn1"><p>Definition from <a href="https://en.wikipedia.org/wiki/Confusion_matrix">Wikipedia</a>.<a href="chapter-3.html#fnref1" class="footnote-back">↩︎</a></p></li>
 <li id="fn2"><p>The standard deviation of its sampling distribution or an estimate of that
 standard deviation. Accounts for one standard deviation to either side of the mean
 value.<a href="chapter-3.html#fnref2" class="footnote-back">↩︎</a></p></li>
