@@ -298,7 +298,7 @@ given that there are <span class="math inline">\(K\)</span> possible values for 
 default, or <em>baseline</em> value. Consider the example of a model to classify flower species
 using the <code>iris</code> data set.</p>
 <table>
-<caption><span id="tab:unnamed-chunk-13">Table 5.1: </span>Data summary</caption>
+<caption><span id="tab:unnamed-chunk-9">Table 5.1: </span>Data summary</caption>
 <tbody>
 <tr class="odd">
 <td align="left">Name</td>
@@ -810,7 +810,7 @@ threshold can be manipulated in order to further evaluate the model fit. By plot
 <div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="chapter-5.html#cb53-1" aria-hidden="true" tabindex="-1"></a>(iris_predictions</span>
 <span id="cb53-2"><a href="chapter-5.html#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">roc_curve</span>(<span class="at">truth =</span> setosa, .pred_TRUE) </span>
 <span id="cb53-3"><a href="chapter-5.html#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">autoplot</span>())</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>The dotted diagonal line represents the probability of randomly guessing the correct
 class, so you want to be as far from that line as possible! For a theoretical model
 making perfect predictions, the curve would rise straight up the left side then across
@@ -840,22 +840,95 @@ value is to 1, the better the model has performed.</p>
 <div id="ch5-multinomial-logistic-regression" class="section level3 hasAnchor" number="5.4.2">
 <h3><span class="header-section-number">5.4.2</span> Multinomial Logistic Regression<a href="chapter-5.html#ch5-multinomial-logistic-regression" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>When expanding our predictive value to predicting <em>all</em> classes of iris species:</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="chapter-5.html#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This recipe assumes that `Species` is predicted by all other values,</span></span>
+<span id="cb56-2"><a href="chapter-5.html#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="co"># creates interaction terms, and normalizes all the numeric predictors.</span></span>
+<span id="cb56-3"><a href="chapter-5.html#cb56-3" aria-hidden="true" tabindex="-1"></a>(iris_recipe</span>
+<span id="cb56-4"><a href="chapter-5.html#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Species <span class="sc">~</span> ., <span class="at">data =</span> iris_data)</span>
+<span id="cb56-5"><a href="chapter-5.html#cb56-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_interact</span>(Species <span class="sc">~</span> Sepal.Length<span class="sc">:</span>Sepal.Width)</span>
+<span id="cb56-6"><a href="chapter-5.html#cb56-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_interact</span>(Species <span class="sc">~</span> Petal.Length<span class="sc">:</span>Petal.Width)</span>
+<span id="cb56-7"><a href="chapter-5.html#cb56-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()))</span></code></pre></div>
+<pre><code>## Recipe
+## 
+## Inputs:
+## 
+##       role #variables
+##    outcome          1
+##  predictor          5
+## 
+## Operations:
+## 
+## Interactions with Species, Sepal.Length:Sepal.Width
+## Interactions with Species, Petal.Length:Petal.Width
+## Centering and scaling for all_numeric_predictors()</code></pre>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="chapter-5.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the model</span></span>
+<span id="cb58-2"><a href="chapter-5.html#cb58-2" aria-hidden="true" tabindex="-1"></a>(iris_model</span>
+<span id="cb58-3"><a href="chapter-5.html#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">multinom_reg</span>()      <span class="co"># Since there are three possible classes</span></span>
+<span id="cb58-4"><a href="chapter-5.html#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">&quot;nnet&quot;</span>)  <span class="co"># Default for `multinom_reg`</span></span>
+<span id="cb58-5"><a href="chapter-5.html#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>))</span></code></pre></div>
+<pre><code>## Multinomial Regression Model Specification (classification)
+## 
+## Computational engine: nnet</code></pre>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="chapter-5.html#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bundle into a workflow (with fit)</span></span>
+<span id="cb60-2"><a href="chapter-5.html#cb60-2" aria-hidden="true" tabindex="-1"></a>(iris_workflow</span>
+<span id="cb60-3"><a href="chapter-5.html#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">workflow</span>()</span>
+<span id="cb60-4"><a href="chapter-5.html#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(iris_recipe)</span>
+<span id="cb60-5"><a href="chapter-5.html#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(iris_model)</span>
+<span id="cb60-6"><a href="chapter-5.html#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> iris_data))</span></code></pre></div>
+<pre><code>## ══ Workflow [trained] ══════════════════════════════════════════════════════════════════════════════
+## Preprocessor: Recipe
+## Model: multinom_reg()
+## 
+## ── Preprocessor ────────────────────────────────────────────────────────────────────────────────────
+## 3 Recipe Steps
+## 
+## • step_interact()
+## • step_interact()
+## • step_normalize()
+## 
+## ── Model ───────────────────────────────────────────────────────────────────────────────────────────
+## Call:
+## nnet::multinom(formula = ..y ~ ., data = data, trace = FALSE)
+## 
+## Coefficients:
+##            (Intercept) setosaFALSE Sepal.Length Sepal.Width Petal.Length Petal.Width
+## versicolor   -12.50946    22.23712   -2.3891417   -1.457228    3.2920305   10.021323
+## virginica    -13.02261    23.17391    0.9776328    2.126536   -0.1497605   -3.559197
+##            Sepal.Length_x_Sepal.Width Petal.Length_x_Petal.Width
+## versicolor                   3.301974                  -13.91689
+## virginica                   -2.833444                    6.01510
+## 
+## Residual Deviance: 50.85561 
+## AIC: 82.85561</code></pre>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="chapter-5.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to the input data</span></span>
+<span id="cb62-2"><a href="chapter-5.html#cb62-2" aria-hidden="true" tabindex="-1"></a>iris_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(iris_workflow, iris_data)</span>
+<span id="cb62-3"><a href="chapter-5.html#cb62-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-4"><a href="chapter-5.html#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a confusion matrix (table)</span></span>
+<span id="cb62-5"><a href="chapter-5.html#cb62-5" aria-hidden="true" tabindex="-1"></a>(confusion_matrix</span>
+<span id="cb62-6"><a href="chapter-5.html#cb62-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> iris_predictions</span>
+<span id="cb62-7"><a href="chapter-5.html#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">count</span>(Species, .pred_class)</span>
+<span id="cb62-8"><a href="chapter-5.html#cb62-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> .pred_class, <span class="at">values_from =</span> n))</span></code></pre></div>
+<pre><code>## # A tibble: 3 × 4
+##   Species    setosa versicolor virginica
+##   &lt;fct&gt;       &lt;int&gt;      &lt;int&gt;     &lt;int&gt;
+## 1 setosa         48         NA        NA
+## 2 versicolor     NA         47         5
+## 3 virginica      NA          7        43</code></pre>
 <p>Here we see that our relatively “un-tuned” model does a good job of identifying <em>setosa</em>
 species but struggles a bit more with <em>versicolor</em> and <em>virginica</em> (due in large part to
 our ‘tweaks’ to the data set). Each row represents the true class of the flower while
 each column represents the predicted class of each flower. In a perfect world, we would
 only have numbers on the diagonal. We can examine the same metrics as we did in the
 binomial case:</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="chapter-5.html#cb56-1" aria-hidden="true" tabindex="-1"></a>eval_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(ppv,    recall, specificity, accuracy, </span>
-<span id="cb56-2"><a href="chapter-5.html#cb56-2" aria-hidden="true" tabindex="-1"></a>                           f_meas, kap,    roc_auc)</span>
-<span id="cb56-3"><a href="chapter-5.html#cb56-3" aria-hidden="true" tabindex="-1"></a><span class="fu">eval_metrics</span>(</span>
-<span id="cb56-4"><a href="chapter-5.html#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> iris_predictions, </span>
-<span id="cb56-5"><a href="chapter-5.html#cb56-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">truth =</span> Species, </span>
-<span id="cb56-6"><a href="chapter-5.html#cb56-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> .pred_class, </span>
-<span id="cb56-7"><a href="chapter-5.html#cb56-7" aria-hidden="true" tabindex="-1"></a>  .pred_setosa,      <span class="co"># to be passed to `roc_auc()`</span></span>
-<span id="cb56-8"><a href="chapter-5.html#cb56-8" aria-hidden="true" tabindex="-1"></a>  .pred_versicolor,  <span class="co"># / /</span></span>
-<span id="cb56-9"><a href="chapter-5.html#cb56-9" aria-hidden="true" tabindex="-1"></a>  .pred_virginica    <span class="co"># /</span></span>
-<span id="cb56-10"><a href="chapter-5.html#cb56-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="chapter-5.html#cb64-1" aria-hidden="true" tabindex="-1"></a>eval_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(ppv,    recall, specificity, accuracy, </span>
+<span id="cb64-2"><a href="chapter-5.html#cb64-2" aria-hidden="true" tabindex="-1"></a>                           f_meas, kap,    roc_auc)</span>
+<span id="cb64-3"><a href="chapter-5.html#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="fu">eval_metrics</span>(</span>
+<span id="cb64-4"><a href="chapter-5.html#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> iris_predictions, </span>
+<span id="cb64-5"><a href="chapter-5.html#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">truth =</span> Species, </span>
+<span id="cb64-6"><a href="chapter-5.html#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> .pred_class, </span>
+<span id="cb64-7"><a href="chapter-5.html#cb64-7" aria-hidden="true" tabindex="-1"></a>  .pred_setosa,      <span class="co"># to be passed to `roc_auc()`</span></span>
+<span id="cb64-8"><a href="chapter-5.html#cb64-8" aria-hidden="true" tabindex="-1"></a>  .pred_versicolor,  <span class="co"># / /</span></span>
+<span id="cb64-9"><a href="chapter-5.html#cb64-9" aria-hidden="true" tabindex="-1"></a>  .pred_virginica    <span class="co"># /</span></span>
+<span id="cb64-10"><a href="chapter-5.html#cb64-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>## # A tibble: 7 × 3
 ##   .metric     .estimator .estimate
 ##   &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt;

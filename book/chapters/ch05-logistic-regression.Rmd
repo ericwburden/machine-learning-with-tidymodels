@@ -274,7 +274,7 @@ eval_metrics(
 
 When expanding our predictive value to predicting *all* classes of iris species:
 
-```{r include=FALSE}
+```{r echo=TRUE}
 # This recipe assumes that `Species` is predicted by all other values,
 # creates interaction terms, and normalizes all the numeric predictors.
 (iris_recipe
