@@ -23,6 +23,7 @@ knitr::opts_chunk$set(
 library(tidymodels)
 library(tidyverse)
 library(glue)
+library(GGally)
 ```
 
 # About {#chapter-1}

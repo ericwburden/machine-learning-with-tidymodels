@@ -1,4 +1,4 @@
-tab:unnamed-chunk-12
+tab:unnamed-chunk-9
 chapter-1
 ch1-software_used
 chapter-2
@@ -52,5 +52,7 @@ ch5-description
 ch5-how-it-works
 ch5-evaluating-validity
 ch5-evaluating-fit
+ch5-binomial-logistic-regression
+ch5-multinomial-logistic-regression
 ch5-example
 references

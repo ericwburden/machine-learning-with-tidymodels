@@ -124,7 +124,207 @@ categories:
 
 ## Evaluating Fit {#ch5-evaluating-fit}
 
-*This section is currently under construction*
+### Binomial Logistic Regression {#ch5-binomial-logistic-regression}
+
+There are a variety of methods for evaluating the fit of a logistic regression. Unlike a
+linear regression on a quantitative response, the ultimate output of a classification
+model (such as a logistic regression) cannot be easily characterized by how *close* the
+individual predicted response is to an observed response, in general, because the
+response either *is* or *is not* classified correctly. Instead, population-wide measures
+such as a *confusion matrix*[^1] can be used. Here's what that looks like for a binomial
+logistic regression on the `iris` data set, determining whether a particular flower is
+of the *setosa* species.
+
+[^1]: Definition from [Wikipedia](https://en.wikipedia.org/wiki/Confusion_matrix).
+
+```{r}
+set.seed(6047)
+
+# I'm going to start by switching around the classes on a few of the
+# observations, just to make the confusion matrix more interesting. 
+# Otherwise, our classifier will be _too_ good.
+(iris_data
+  <- iris
+  |> mutate(
+    replace = sample(Species, n()),
+    Species = if_else(runif(n(), 0, 1) > .15, Species, replace),
+    setosa  = factor(Species == "setosa", levels = c("TRUE", "FALSE")),
+  )
+  |> select(Species, setosa, matches("(Length|Width)$")))
+
+# This recipe assumes that `Species` is predicted by all other values,
+# creates interaction terms, and normalizes all the numeric predictors.
+(iris_recipe
+  <- recipe(setosa ~ ., data = iris_data)
+  |> step_rm(Species) # no cheating!
+  |> step_interact(setosa ~ Sepal.Length:Sepal.Width)
+  |> step_interact(setosa ~ Petal.Length:Petal.Width)
+  |> step_normalize(all_numeric_predictors()))
+
+# Specify the model
+(iris_model
+  <- logistic_reg()
+  |> set_engine("glm")
+  |> set_mode("classification"))
+
+# Bundle into a workflow (with fit)
+(iris_workflow
+  <- workflow()
+  |> add_recipe(iris_recipe)
+  |> add_model(iris_model)
+  |> fit(data = iris_data))
+
+# Add predictions to the input data
+iris_predictions <- augment(iris_workflow, iris_data)
+
+# Create a confusion matrix (table)
+(confusion_matrix
+  <- iris_predictions
+  |> count(setosa, .pred_class)
+  |> pivot_wider(names_from = .pred_class, values_from = n))
+```
+
+In this binary case, the results can be classified in four different ways:
+
+-   A *true positive* [$TP$] is a case where the observed value is 'true' and the
+    predicted value is 'true'.
+
+-   A *true negative* [$TN$] is a case where the observed value is 'false' and the
+    predicted value is 'false'.
+
+-   A *false positive* [$FP$] is a case where the observed value is 'false' and the
+    predicted value is 'true'.
+
+-   A *false negative* [$FN$] is a case where the observed value is 'true' and the
+    predicted value is 'false'.
+
+The counts of observations in these four 'buckets' can be used to calculate a variety of
+useful measures:
+
+-   *Precision* [$TP/(TP + FP)$] is defined as the proportion of predicted positives
+    that are actually positive. Also called *positive predictive value*. Answers the
+    question: "Of all the flowers the model predicted to be *setosa*, what fraction
+    actually were?"
+
+-   *Recall* [$TP/(TP + FN)$] is defined as the proportion of positive results out of
+    the number of samples which were actually positive. Also called *sensitivity*.
+    Answers the question: "Of all the flowers that are actually *setosa*, what fraction
+    did the model identify?"
+
+-   *Specificity* [$TN/(TN + FP)$] is defined as the proportion of negative results out
+    of the number of samples which were actually negative. Answers the question: "Of all
+    flowers that were **not** *setosa*, what fraction did the model identify?"
+
+-   *Accuracy* [$(TP + TN)/(TP + TN + FP + FN)$] is the percentage of labels predicted
+    accurately for a sample. Answers the question: "Of all the observations, what
+    fraction were correctly classified?"
+
+-   *F Measure* is a weighted average of the precision and recall, with best 1 and worst
+    being 0.
+
+-   *Cohen's Kappa* has other uses, but when determining the performance of a
+    classification model it provides an estimate of how much better the observed
+    accuracy (calculated as shown above) is than the expected accuracy. For example, if
+    the expected accuracy is 50% (random chance) and the observed accuracy is 95%,
+    $\kappa$ will be 0.90. This is especially useful when the class distribution is
+    skewed. Kappa can be calculated as shown:
+
+    $$\begin{align}
+    observations &= n = TP + TN + FP + FN \\
+    accuracy_{obs} &= \frac{TP + TN}{n}\\
+    accuracy_{exp} &= \left(\frac{TP * FP}{obs} + \frac{TN * FN}{obs}\right) \div n\\
+    \kappa &= \frac{accuracy_{obs} - accuracy{exp}}{1 - accuracy_{exp}}
+    \end{align}$$
+
+As described in [How it Works](#ch5-how-it-works), a logistic regression model doesn't
+*exactly* predict the class of each observation, but a set of probabilities that the
+observation belongs to each class. In the binary case, these are the probability that
+the observed class is 'true' (\$p(X)\$) and the probability that it is 'false' (\$1 -
+p(X)\$). By default, if $p(X) > 0.5$, then the predicted class will be 'true'. This
+threshold can be manipulated in order to further evaluate the model fit. By plotting the
+*sensitivity* against [1 - *specificity*] for a range of threshold values, you get a
+*received operator characteristic* (ROC) chart:
+
+```{r}
+(iris_predictions
+  |> roc_curve(truth = setosa, .pred_TRUE) 
+  |> autoplot())
+```
+
+The dotted diagonal line represents the probability of randomly guessing the correct
+class, so you want to be as far from that line as possible! For a theoretical model
+making perfect predictions, the curve would rise straight up the left side then across
+the top. The *area under the curve* (AUC) is a value between 0 and 1 that provides a
+quantitative measurement of the performance indicated by the ROC curve. The closer this
+value is to 1, the better the model has performed.
+
+```{r}
+# Define a set of metrics using the `yardstick` package
+eval_metrics <- metric_set(ppv,    recall, specificity, accuracy, 
+                           f_meas, kap,    roc_auc)
+eval_metrics(
+  data = iris_predictions, 
+  truth = setosa, 
+  estimate = .pred_class,
+  .pred_TRUE  # to be passed to `roc_auc()`
+)
+```
+
+### Multinomial Logistic Regression {#ch5-multinomial-logistic-regression}
+
+When expanding our predictive value to predicting *all* classes of iris species:
+
+```{r echo=TRUE}
+# This recipe assumes that `Species` is predicted by all other values,
+# creates interaction terms, and normalizes all the numeric predictors.
+(iris_recipe
+  <- recipe(Species ~ ., data = iris_data)
+  |> step_interact(Species ~ Sepal.Length:Sepal.Width)
+  |> step_interact(Species ~ Petal.Length:Petal.Width)
+  |> step_normalize(all_numeric_predictors()))
+
+# Specify the model
+(iris_model
+  <- multinom_reg()      # Since there are three possible classes
+  |> set_engine("nnet")  # Default for `multinom_reg`
+  |> set_mode("classification"))
+
+# Bundle into a workflow (with fit)
+(iris_workflow
+  <- workflow()
+  |> add_recipe(iris_recipe)
+  |> add_model(iris_model)
+  |> fit(data = iris_data))
+
+# Add predictions to the input data
+iris_predictions <- augment(iris_workflow, iris_data)
+
+# Create a confusion matrix (table)
+(confusion_matrix
+  <- iris_predictions
+  |> count(Species, .pred_class)
+  |> pivot_wider(names_from = .pred_class, values_from = n))
+```
+
+Here we see that our relatively "un-tuned" model does a good job of identifying *setosa*
+species but struggles a bit more with *versicolor* and *virginica* (due in large part to
+our 'tweaks' to the data set). Each row represents the true class of the flower while
+each column represents the predicted class of each flower. In a perfect world, we would
+only have numbers on the diagonal. We can examine the same metrics as we did in the
+binomial case:
+
+```{r}
+eval_metrics <- metric_set(ppv,    recall, specificity, accuracy, 
+                           f_meas, kap,    roc_auc)
+eval_metrics(
+  data = iris_predictions, 
+  truth = Species, 
+  estimate = .pred_class, 
+  .pred_setosa,      # to be passed to `roc_auc()`
+  .pred_versicolor,  # / /
+  .pred_virginica    # /
+)
+```
 
 ## Example {#ch5-example}
 
