@@ -26,7 +26,7 @@ syntax and workflow for leveraging these techniques.</p>" />
 <meta name="author" content="Eric Burden" />
 
 
-<meta name="date" content="2022-11-03" />
+<meta name="date" content="2022-11-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -228,7 +228,14 @@ div.csl-indent {
 <li class="chapter" data-level="5.4.1" data-path="chapter-5.html"><a href="chapter-5.html#ch5-binomial-logistic-regression"><i class="fa fa-check"></i><b>5.4.1</b> Binomial Logistic Regression</a></li>
 <li class="chapter" data-level="5.4.2" data-path="chapter-5.html"><a href="chapter-5.html#ch5-multinomial-logistic-regression"><i class="fa fa-check"></i><b>5.4.2</b> Multinomial Logistic Regression</a></li>
 </ul></li>
-<li class="chapter" data-level="5.5" data-path="chapter-5.html"><a href="chapter-5.html#ch5-example"><i class="fa fa-check"></i><b>5.5</b> Example</a></li>
+<li class="chapter" data-level="5.5" data-path="chapter-5.html"><a href="chapter-5.html#ch5-example"><i class="fa fa-check"></i><b>5.5</b> Example</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="chapter-5.html"><a href="chapter-5.html#dataset"><i class="fa fa-check"></i><b>5.5.1</b> Dataset</a></li>
+<li class="chapter" data-level="5.5.2" data-path="chapter-5.html"><a href="chapter-5.html#response-categories"><i class="fa fa-check"></i><b>5.5.2</b> Response Categories</a></li>
+<li class="chapter" data-level="5.5.3" data-path="chapter-5.html"><a href="chapter-5.html#correlations"><i class="fa fa-check"></i><b>5.5.3</b> Correlations</a></li>
+<li class="chapter" data-level="5.5.4" data-path="chapter-5.html"><a href="chapter-5.html#high-leverage-points"><i class="fa fa-check"></i><b>5.5.4</b> High Leverage Points</a></li>
+<li class="chapter" data-level="5.5.5" data-path="chapter-5.html"><a href="chapter-5.html#fit-and-check"><i class="fa fa-check"></i><b>5.5.5</b> Fit and Check</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>6</b> References</a></li>
 <li class="divider"></li>
@@ -297,8 +304,9 @@ predictor for simplicity):</p>
 given that there are <span class="math inline">\(K\)</span> possible values for <span class="math inline">\(Y\)</span>, one possible <span class="math inline">\(K\)</span> is chosen as the
 default, or <em>baseline</em> value. Consider the example of a model to classify flower species
 using the <code>iris</code> data set.</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="chapter-5.html#cb47-1" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(iris)</span></code></pre></div>
 <table>
-<caption><span id="tab:unnamed-chunk-9">Table 5.1: </span>Data summary</caption>
+<caption><span id="tab:ch5-1">Table 5.1: </span>Data summary</caption>
 <tbody>
 <tr class="odd">
 <td align="left">Name</td>
@@ -492,8 +500,8 @@ independently for each response, it is assume that <em>each observation is
 independent</em>.</p></li>
 <li><p>Each predictor variable is assumed to be independent as well, that is, there is no
 <a href="chapter-4.html#ch4-collinearity">collinearity</a> between predictors. This can be detected through
-exploratory visualization using a scatterplot matrix or by calculating <em>variance
-inflation factors</em> via <code>car::vif</code> or other methods.</p></li>
+exploratory visualization using a scatterplot matrix, by calculating <em>variance
+inflation factors</em> via <code>car::vif</code>, or by other methods.</p></li>
 <li><p>Just as with linear regression models, the goodness-of-fit can be negatively
 impacted by <a href="chapter-3.html#ch3-outliers">outliers</a> or <a href="chapter-3.html#ch3-high-leverage-points">high-leverage
 points</a>.</p></li>
@@ -516,178 +524,194 @@ response either <em>is</em> or <em>is not</em> classified correctly. Instead, po
 such as a <em>confusion matrix</em><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a> can be used. Here’s what that looks like for a binomial
 logistic regression on the <code>iris</code> data set, determining whether a particular flower is
 of the <em>setosa</em> species.</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="chapter-5.html#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">6047</span>)</span>
-<span id="cb43-2"><a href="chapter-5.html#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb43-3"><a href="chapter-5.html#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="co"># I&#39;m going to start by switching around the classes on a few of the</span></span>
-<span id="cb43-4"><a href="chapter-5.html#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># observations, just to make the confusion matrix more interesting. </span></span>
-<span id="cb43-5"><a href="chapter-5.html#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Otherwise, our classifier will be _too_ good.</span></span>
-<span id="cb43-6"><a href="chapter-5.html#cb43-6" aria-hidden="true" tabindex="-1"></a>(iris_data</span>
-<span id="cb43-7"><a href="chapter-5.html#cb43-7" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> iris</span>
-<span id="cb43-8"><a href="chapter-5.html#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">mutate</span>(</span>
-<span id="cb43-9"><a href="chapter-5.html#cb43-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">replace =</span> <span class="fu">sample</span>(Species, <span class="fu">n</span>()),</span>
-<span id="cb43-10"><a href="chapter-5.html#cb43-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">Species =</span> <span class="fu">if_else</span>(<span class="fu">runif</span>(<span class="fu">n</span>(), <span class="dv">0</span>, <span class="dv">1</span>) <span class="sc">&gt;</span> .<span class="dv">15</span>, Species, replace),</span>
-<span id="cb43-11"><a href="chapter-5.html#cb43-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">setosa  =</span> <span class="fu">factor</span>(Species <span class="sc">==</span> <span class="st">&quot;setosa&quot;</span>, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;TRUE&quot;</span>, <span class="st">&quot;FALSE&quot;</span>)),</span>
-<span id="cb43-12"><a href="chapter-5.html#cb43-12" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb43-13"><a href="chapter-5.html#cb43-13" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">select</span>(Species, setosa, <span class="fu">matches</span>(<span class="st">&quot;(Length|Width)$&quot;</span>)))</span></code></pre></div>
-<pre><code>##        Species setosa Sepal.Length Sepal.Width Petal.Length Petal.Width
-## 1       setosa   TRUE          5.1         3.5          1.4         0.2
-## 2       setosa   TRUE          4.9         3.0          1.4         0.2
-## 3       setosa   TRUE          4.7         3.2          1.3         0.2
-## 4       setosa   TRUE          4.6         3.1          1.5         0.2
-## 5       setosa   TRUE          5.0         3.6          1.4         0.2
-## 6       setosa   TRUE          5.4         3.9          1.7         0.4
-## 7       setosa   TRUE          4.6         3.4          1.4         0.3
-## 8       setosa   TRUE          5.0         3.4          1.5         0.2
-## 9       setosa   TRUE          4.4         2.9          1.4         0.2
-## 10      setosa   TRUE          4.9         3.1          1.5         0.1
-## 11      setosa   TRUE          5.4         3.7          1.5         0.2
-## 12      setosa   TRUE          4.8         3.4          1.6         0.2
-## 13      setosa   TRUE          4.8         3.0          1.4         0.1
-## 14      setosa   TRUE          4.3         3.0          1.1         0.1
-## 15      setosa   TRUE          5.8         4.0          1.2         0.2
-## 16      setosa   TRUE          5.7         4.4          1.5         0.4
-## 17      setosa   TRUE          5.4         3.9          1.3         0.4
-## 18      setosa   TRUE          5.1         3.5          1.4         0.3
-## 19      setosa   TRUE          5.7         3.8          1.7         0.3
-## 20      setosa   TRUE          5.1         3.8          1.5         0.3
-## 21  versicolor  FALSE          5.4         3.4          1.7         0.2
-## 22      setosa   TRUE          5.1         3.7          1.5         0.4
-## 23      setosa   TRUE          4.6         3.6          1.0         0.2
-## 24      setosa   TRUE          5.1         3.3          1.7         0.5
-## 25      setosa   TRUE          4.8         3.4          1.9         0.2
-## 26      setosa   TRUE          5.0         3.0          1.6         0.2
-## 27  versicolor  FALSE          5.0         3.4          1.6         0.4
-## 28      setosa   TRUE          5.2         3.5          1.5         0.2
-## 29      setosa   TRUE          5.2         3.4          1.4         0.2
-## 30   virginica  FALSE          4.7         3.2          1.6         0.2
-## 31      setosa   TRUE          4.8         3.1          1.6         0.2
-## 32      setosa   TRUE          5.4         3.4          1.5         0.4
-## 33      setosa   TRUE          5.2         4.1          1.5         0.1
-## 34      setosa   TRUE          5.5         4.2          1.4         0.2
-## 35  versicolor  FALSE          4.9         3.1          1.5         0.2
-## 36      setosa   TRUE          5.0         3.2          1.2         0.2
-## 37   virginica  FALSE          5.5         3.5          1.3         0.2
-## 38      setosa   TRUE          4.9         3.6          1.4         0.1
-## 39      setosa   TRUE          4.4         3.0          1.3         0.2
-## 40      setosa   TRUE          5.1         3.4          1.5         0.2
-## 41      setosa   TRUE          5.0         3.5          1.3         0.3
-## 42      setosa   TRUE          4.5         2.3          1.3         0.3
-## 43      setosa   TRUE          4.4         3.2          1.3         0.2
-## 44      setosa   TRUE          5.0         3.5          1.6         0.6
-## 45      setosa   TRUE          5.1         3.8          1.9         0.4
-## 46      setosa   TRUE          4.8         3.0          1.4         0.3
-## 47      setosa   TRUE          5.1         3.8          1.6         0.2
-## 48      setosa   TRUE          4.6         3.2          1.4         0.2
-## 49      setosa   TRUE          5.3         3.7          1.5         0.2
-## 50      setosa   TRUE          5.0         3.3          1.4         0.2
-## 51  versicolor  FALSE          7.0         3.2          4.7         1.4
-## 52  versicolor  FALSE          6.4         3.2          4.5         1.5
-## 53  versicolor  FALSE          6.9         3.1          4.9         1.5
-## 54  versicolor  FALSE          5.5         2.3          4.0         1.3
-## 55  versicolor  FALSE          6.5         2.8          4.6         1.5
-## 56   virginica  FALSE          5.7         2.8          4.5         1.3
-## 57  versicolor  FALSE          6.3         3.3          4.7         1.6
-## 58  versicolor  FALSE          4.9         2.4          3.3         1.0
-## 59  versicolor  FALSE          6.6         2.9          4.6         1.3
-## 60  versicolor  FALSE          5.2         2.7          3.9         1.4
-## 61  versicolor  FALSE          5.0         2.0          3.5         1.0
-## 62  versicolor  FALSE          5.9         3.0          4.2         1.5
-## 63   virginica  FALSE          6.0         2.2          4.0         1.0
-## 64  versicolor  FALSE          6.1         2.9          4.7         1.4
-## 65  versicolor  FALSE          5.6         2.9          3.6         1.3
-## 66  versicolor  FALSE          6.7         3.1          4.4         1.4
-## 67  versicolor  FALSE          5.6         3.0          4.5         1.5
-## 68  versicolor  FALSE          5.8         2.7          4.1         1.0
-## 69  versicolor  FALSE          6.2         2.2          4.5         1.5
-## 70  versicolor  FALSE          5.6         2.5          3.9         1.1
-## 71  versicolor  FALSE          5.9         3.2          4.8         1.8
-## 72  versicolor  FALSE          6.1         2.8          4.0         1.3
-## 73  versicolor  FALSE          6.3         2.5          4.9         1.5
-## 74  versicolor  FALSE          6.1         2.8          4.7         1.2
-## 75  versicolor  FALSE          6.4         2.9          4.3         1.3
-## 76  versicolor  FALSE          6.6         3.0          4.4         1.4
-## 77  versicolor  FALSE          6.8         2.8          4.8         1.4
-## 78  versicolor  FALSE          6.7         3.0          5.0         1.7
-## 79  versicolor  FALSE          6.0         2.9          4.5         1.5
-## 80  versicolor  FALSE          5.7         2.6          3.5         1.0
-## 81  versicolor  FALSE          5.5         2.4          3.8         1.1
-## 82  versicolor  FALSE          5.5         2.4          3.7         1.0
-## 83  versicolor  FALSE          5.8         2.7          3.9         1.2
-## 84  versicolor  FALSE          6.0         2.7          5.1         1.6
-## 85  versicolor  FALSE          5.4         3.0          4.5         1.5
-## 86  versicolor  FALSE          6.0         3.4          4.5         1.6
-## 87  versicolor  FALSE          6.7         3.1          4.7         1.5
-## 88  versicolor  FALSE          6.3         2.3          4.4         1.3
-## 89  versicolor  FALSE          5.6         3.0          4.1         1.3
-## 90  versicolor  FALSE          5.5         2.5          4.0         1.3
-## 91  versicolor  FALSE          5.5         2.6          4.4         1.2
-## 92  versicolor  FALSE          6.1         3.0          4.6         1.4
-## 93  versicolor  FALSE          5.8         2.6          4.0         1.2
-## 94  versicolor  FALSE          5.0         2.3          3.3         1.0
-## 95  versicolor  FALSE          5.6         2.7          4.2         1.3
-## 96  versicolor  FALSE          5.7         3.0          4.2         1.2
-## 97  versicolor  FALSE          5.7         2.9          4.2         1.3
-## 98   virginica  FALSE          6.2         2.9          4.3         1.3
-## 99  versicolor  FALSE          5.1         2.5          3.0         1.1
-## 100 versicolor  FALSE          5.7         2.8          4.1         1.3
-## 101  virginica  FALSE          6.3         3.3          6.0         2.5
-## 102  virginica  FALSE          5.8         2.7          5.1         1.9
-## 103  virginica  FALSE          7.1         3.0          5.9         2.1
-## 104  virginica  FALSE          6.3         2.9          5.6         1.8
-## 105  virginica  FALSE          6.5         3.0          5.8         2.2
-## 106  virginica  FALSE          7.6         3.0          6.6         2.1
-## 107     setosa   TRUE          4.9         2.5          4.5         1.7
-## 108  virginica  FALSE          7.3         2.9          6.3         1.8
-## 109  virginica  FALSE          6.7         2.5          5.8         1.8
-## 110  virginica  FALSE          7.2         3.6          6.1         2.5
-## 111 versicolor  FALSE          6.5         3.2          5.1         2.0
-## 112  virginica  FALSE          6.4         2.7          5.3         1.9
-## 113  virginica  FALSE          6.8         3.0          5.5         2.1
-## 114  virginica  FALSE          5.7         2.5          5.0         2.0
-## 115  virginica  FALSE          5.8         2.8          5.1         2.4
-## 116  virginica  FALSE          6.4         3.2          5.3         2.3
-## 117  virginica  FALSE          6.5         3.0          5.5         1.8
-## 118     setosa   TRUE          7.7         3.8          6.7         2.2
-## 119     setosa   TRUE          7.7         2.6          6.9         2.3
-## 120  virginica  FALSE          6.0         2.2          5.0         1.5
-## 121  virginica  FALSE          6.9         3.2          5.7         2.3
-## 122  virginica  FALSE          5.6         2.8          4.9         2.0
-## 123  virginica  FALSE          7.7         2.8          6.7         2.0
-## 124  virginica  FALSE          6.3         2.7          4.9         1.8
-## 125  virginica  FALSE          6.7         3.3          5.7         2.1
-## 126  virginica  FALSE          7.2         3.2          6.0         1.8
-## 127  virginica  FALSE          6.2         2.8          4.8         1.8
-## 128  virginica  FALSE          6.1         3.0          4.9         1.8
-## 129  virginica  FALSE          6.4         2.8          5.6         2.1
-## 130  virginica  FALSE          7.2         3.0          5.8         1.6
-## 131  virginica  FALSE          7.4         2.8          6.1         1.9
-## 132  virginica  FALSE          7.9         3.8          6.4         2.0
-## 133  virginica  FALSE          6.4         2.8          5.6         2.2
-## 134  virginica  FALSE          6.3         2.8          5.1         1.5
-## 135  virginica  FALSE          6.1         2.6          5.6         1.4
-## 136  virginica  FALSE          7.7         3.0          6.1         2.3
-## 137  virginica  FALSE          6.3         3.4          5.6         2.4
-## 138  virginica  FALSE          6.4         3.1          5.5         1.8
-## 139  virginica  FALSE          6.0         3.0          4.8         1.8
-## 140  virginica  FALSE          6.9         3.1          5.4         2.1
-## 141  virginica  FALSE          6.7         3.1          5.6         2.4
-## 142  virginica  FALSE          6.9         3.1          5.1         2.3
-## 143  virginica  FALSE          5.8         2.7          5.1         1.9
-## 144  virginica  FALSE          6.8         3.2          5.9         2.3
-## 145  virginica  FALSE          6.7         3.3          5.7         2.5
-## 146  virginica  FALSE          6.7         3.0          5.2         2.3
-## 147  virginica  FALSE          6.3         2.5          5.0         1.9
-## 148 versicolor  FALSE          6.5         3.0          5.2         2.0
-## 149  virginica  FALSE          6.2         3.4          5.4         2.3
-## 150  virginica  FALSE          5.9         3.0          5.1         1.8</code></pre>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="chapter-5.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This recipe assumes that `Species` is predicted by all other values,</span></span>
-<span id="cb45-2"><a href="chapter-5.html#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="co"># creates interaction terms, and normalizes all the numeric predictors.</span></span>
-<span id="cb45-3"><a href="chapter-5.html#cb45-3" aria-hidden="true" tabindex="-1"></a>(iris_recipe</span>
-<span id="cb45-4"><a href="chapter-5.html#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">recipe</span>(setosa <span class="sc">~</span> ., <span class="at">data =</span> iris_data)</span>
-<span id="cb45-5"><a href="chapter-5.html#cb45-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_rm</span>(Species) <span class="co"># no cheating!</span></span>
-<span id="cb45-6"><a href="chapter-5.html#cb45-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_interact</span>(setosa <span class="sc">~</span> Sepal.Length<span class="sc">:</span>Sepal.Width)</span>
-<span id="cb45-7"><a href="chapter-5.html#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_interact</span>(setosa <span class="sc">~</span> Petal.Length<span class="sc">:</span>Petal.Width)</span>
-<span id="cb45-8"><a href="chapter-5.html#cb45-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()))</span></code></pre></div>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="chapter-5.html#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">6047</span>)</span>
+<span id="cb48-2"><a href="chapter-5.html#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="chapter-5.html#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="co"># I&#39;m going to start by switching around the classes on a few of the</span></span>
+<span id="cb48-4"><a href="chapter-5.html#cb48-4" aria-hidden="true" tabindex="-1"></a><span class="co"># observations, just to make the confusion matrix more interesting. </span></span>
+<span id="cb48-5"><a href="chapter-5.html#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Otherwise, our classifier will be _too_ good.</span></span>
+<span id="cb48-6"><a href="chapter-5.html#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(</span>
+<span id="cb48-7"><a href="chapter-5.html#cb48-7" aria-hidden="true" tabindex="-1"></a>  iris_data</span>
+<span id="cb48-8"><a href="chapter-5.html#cb48-8" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> iris</span>
+<span id="cb48-9"><a href="chapter-5.html#cb48-9" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">mutate</span>(</span>
+<span id="cb48-10"><a href="chapter-5.html#cb48-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">replace =</span> <span class="fu">sample</span>(Species, <span class="fu">n</span>()),</span>
+<span id="cb48-11"><a href="chapter-5.html#cb48-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">Species =</span> <span class="fu">if_else</span>(<span class="fu">runif</span>(<span class="fu">n</span>(), <span class="dv">0</span>, <span class="dv">1</span>) <span class="sc">&gt;</span> .<span class="dv">15</span>, Species, replace),</span>
+<span id="cb48-12"><a href="chapter-5.html#cb48-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">setosa  =</span> <span class="fu">factor</span>(Species <span class="sc">==</span> <span class="st">&quot;setosa&quot;</span>, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;TRUE&quot;</span>, <span class="st">&quot;FALSE&quot;</span>)),</span>
+<span id="cb48-13"><a href="chapter-5.html#cb48-13" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb48-14"><a href="chapter-5.html#cb48-14" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">select</span>(Species, setosa, <span class="fu">matches</span>(<span class="st">&quot;(Length|Width)$&quot;</span>))</span>
+<span id="cb48-15"><a href="chapter-5.html#cb48-15" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<table>
+<caption><span id="tab:ch5-2">Table 5.2: </span>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">… &lt;- NULL</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">150</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">6</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">factor</td>
+<td align="left">2</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">4</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: factor</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col width="17%" />
+<col width="12%" />
+<col width="17%" />
+<col width="9%" />
+<col width="11%" />
+<col width="32%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="left">ordered</th>
+<th align="right">n_unique</th>
+<th align="left">top_counts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Species</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">FALSE</td>
+<td align="right">3</td>
+<td align="left">ver: 52, vir: 50, set: 48</td>
+</tr>
+<tr class="even">
+<td align="left">setosa</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">FALSE</td>
+<td align="right">2</td>
+<td align="left">FAL: 102, TRU: 48</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col width="18%" />
+<col width="13%" />
+<col width="18%" />
+<col width="6%" />
+<col width="6%" />
+<col width="5%" />
+<col width="5%" />
+<col width="6%" />
+<col width="5%" />
+<col width="6%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Sepal.Length</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">5.84</td>
+<td align="right">0.83</td>
+<td align="right">4.3</td>
+<td align="right">5.1</td>
+<td align="right">5.80</td>
+<td align="right">6.4</td>
+<td align="right">7.9</td>
+<td align="left">▆▇▇▅▂</td>
+</tr>
+<tr class="even">
+<td align="left">Sepal.Width</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3.06</td>
+<td align="right">0.44</td>
+<td align="right">2.0</td>
+<td align="right">2.8</td>
+<td align="right">3.00</td>
+<td align="right">3.3</td>
+<td align="right">4.4</td>
+<td align="left">▁▆▇▂▁</td>
+</tr>
+<tr class="odd">
+<td align="left">Petal.Length</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3.76</td>
+<td align="right">1.77</td>
+<td align="right">1.0</td>
+<td align="right">1.6</td>
+<td align="right">4.35</td>
+<td align="right">5.1</td>
+<td align="right">6.9</td>
+<td align="left">▇▁▆▇▂</td>
+</tr>
+<tr class="even">
+<td align="left">Petal.Width</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">1.20</td>
+<td align="right">0.76</td>
+<td align="right">0.1</td>
+<td align="right">0.3</td>
+<td align="right">1.30</td>
+<td align="right">1.8</td>
+<td align="right">2.5</td>
+<td align="left">▇▁▇▅▃</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="chapter-5.html#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This recipe assumes that `Species` is predicted by all other values,</span></span>
+<span id="cb49-2"><a href="chapter-5.html#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="co"># creates interaction terms, and normalizes all the numeric predictors.</span></span>
+<span id="cb49-3"><a href="chapter-5.html#cb49-3" aria-hidden="true" tabindex="-1"></a>(iris_recipe</span>
+<span id="cb49-4"><a href="chapter-5.html#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">recipe</span>(setosa <span class="sc">~</span> ., <span class="at">data =</span> iris_data)</span>
+<span id="cb49-5"><a href="chapter-5.html#cb49-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_rm</span>(Species) <span class="co"># no cheating!</span></span>
+<span id="cb49-6"><a href="chapter-5.html#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_interact</span>(setosa <span class="sc">~</span> Sepal.Length<span class="sc">:</span>Sepal.Width)</span>
+<span id="cb49-7"><a href="chapter-5.html#cb49-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_interact</span>(setosa <span class="sc">~</span> Petal.Length<span class="sc">:</span>Petal.Width)</span>
+<span id="cb49-8"><a href="chapter-5.html#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()))</span></code></pre></div>
 <pre><code>## Recipe
 ## 
 ## Inputs:
@@ -702,25 +726,25 @@ of the <em>setosa</em> species.</p>
 ## Interactions with setosa, Sepal.Length:Sepal.Width
 ## Interactions with setosa, Petal.Length:Petal.Width
 ## Centering and scaling for all_numeric_predictors()</code></pre>
-<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="chapter-5.html#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the model</span></span>
-<span id="cb47-2"><a href="chapter-5.html#cb47-2" aria-hidden="true" tabindex="-1"></a>(iris_model</span>
-<span id="cb47-3"><a href="chapter-5.html#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>()</span>
-<span id="cb47-4"><a href="chapter-5.html#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">&quot;glm&quot;</span>)</span>
-<span id="cb47-5"><a href="chapter-5.html#cb47-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="chapter-5.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the model</span></span>
+<span id="cb51-2"><a href="chapter-5.html#cb51-2" aria-hidden="true" tabindex="-1"></a>(iris_model</span>
+<span id="cb51-3"><a href="chapter-5.html#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>()</span>
+<span id="cb51-4"><a href="chapter-5.html#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">&quot;glm&quot;</span>)</span>
+<span id="cb51-5"><a href="chapter-5.html#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>))</span></code></pre></div>
 <pre><code>## Logistic Regression Model Specification (classification)
 ## 
 ## Computational engine: glm</code></pre>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="chapter-5.html#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bundle into a workflow (with fit)</span></span>
-<span id="cb49-2"><a href="chapter-5.html#cb49-2" aria-hidden="true" tabindex="-1"></a>(iris_workflow</span>
-<span id="cb49-3"><a href="chapter-5.html#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">workflow</span>()</span>
-<span id="cb49-4"><a href="chapter-5.html#cb49-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(iris_recipe)</span>
-<span id="cb49-5"><a href="chapter-5.html#cb49-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(iris_model)</span>
-<span id="cb49-6"><a href="chapter-5.html#cb49-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> iris_data))</span></code></pre></div>
-<pre><code>## ══ Workflow [trained] ══════════════════════════════════════════════════════════════════════════════
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="chapter-5.html#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bundle into a workflow (with fit)</span></span>
+<span id="cb53-2"><a href="chapter-5.html#cb53-2" aria-hidden="true" tabindex="-1"></a>(iris_workflow</span>
+<span id="cb53-3"><a href="chapter-5.html#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">workflow</span>()</span>
+<span id="cb53-4"><a href="chapter-5.html#cb53-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(iris_recipe)</span>
+<span id="cb53-5"><a href="chapter-5.html#cb53-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(iris_model)</span>
+<span id="cb53-6"><a href="chapter-5.html#cb53-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> iris_data))</span></code></pre></div>
+<pre><code>## ══ Workflow [trained] ═══════════════════════════════════════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: logistic_reg()
 ## 
-## ── Preprocessor ────────────────────────────────────────────────────────────────────────────────────
+## ── Preprocessor ─────────────────────────────────────────────────────────────────────────────────────
 ## 4 Recipe Steps
 ## 
 ## • step_rm()
@@ -728,7 +752,7 @@ of the <em>setosa</em> species.</p>
 ## • step_interact()
 ## • step_normalize()
 ## 
-## ── Model ───────────────────────────────────────────────────────────────────────────────────────────
+## ── Model ────────────────────────────────────────────────────────────────────────────────────────────
 ## 
 ## Call:  stats::glm(formula = ..y ~ ., family = stats::binomial, data = data)
 ## 
@@ -743,14 +767,14 @@ of the <em>setosa</em> species.</p>
 ## Degrees of Freedom: 149 Total (i.e. Null);  143 Residual
 ## Null Deviance:       188.1 
 ## Residual Deviance: 51.93     AIC: 65.93</code></pre>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="chapter-5.html#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to the input data</span></span>
-<span id="cb51-2"><a href="chapter-5.html#cb51-2" aria-hidden="true" tabindex="-1"></a>iris_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(iris_workflow, iris_data)</span>
-<span id="cb51-3"><a href="chapter-5.html#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-4"><a href="chapter-5.html#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a confusion matrix (table)</span></span>
-<span id="cb51-5"><a href="chapter-5.html#cb51-5" aria-hidden="true" tabindex="-1"></a>(confusion_matrix</span>
-<span id="cb51-6"><a href="chapter-5.html#cb51-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> iris_predictions</span>
-<span id="cb51-7"><a href="chapter-5.html#cb51-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">count</span>(setosa, .pred_class)</span>
-<span id="cb51-8"><a href="chapter-5.html#cb51-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> .pred_class, <span class="at">values_from =</span> n))</span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="chapter-5.html#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to the input data</span></span>
+<span id="cb55-2"><a href="chapter-5.html#cb55-2" aria-hidden="true" tabindex="-1"></a>iris_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(iris_workflow, iris_data)</span>
+<span id="cb55-3"><a href="chapter-5.html#cb55-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-4"><a href="chapter-5.html#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a confusion matrix (table)</span></span>
+<span id="cb55-5"><a href="chapter-5.html#cb55-5" aria-hidden="true" tabindex="-1"></a>(confusion_matrix</span>
+<span id="cb55-6"><a href="chapter-5.html#cb55-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> iris_predictions</span>
+<span id="cb55-7"><a href="chapter-5.html#cb55-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">count</span>(setosa, .pred_class)</span>
+<span id="cb55-8"><a href="chapter-5.html#cb55-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> .pred_class, <span class="at">values_from =</span> n))</span></code></pre></div>
 <pre><code>## # A tibble: 2 × 3
 ##   setosa `TRUE` `FALSE`
 ##   &lt;fct&gt;   &lt;int&gt;   &lt;int&gt;
@@ -786,12 +810,14 @@ accurately for a sample. Answers the question: “Of all the observations, what
 fraction were correctly classified?”</p></li>
 <li><p><em>F Measure</em> is a weighted average of the precision and recall, with best 1 and worst
 being 0.</p></li>
-<li><p><em>Cohen’s Kappa</em> has other uses, but when determining the performance of a
-classification model it provides an estimate of how much better the observed
-accuracy (calculated as shown above) is than the expected accuracy. For example, if
-the expected accuracy is 50% (random chance) and the observed accuracy is 95%,
-<span class="math inline">\(\kappa\)</span> will be 0.90. This is especially useful when the class distribution is
-skewed. Kappa can be calculated as shown:</p>
+<li><p><em>Cohen’s Kappa</em> is also used to evaluate inter-rater reliability, but if one
+considers the observed classification to be set by one <em>rater</em> and the predicted
+classes to be set by another <em>rater</em>, it can be usefully applied to classification
+models. When applied in this way, <span class="math inline">\(\kappa\)</span> provides an estimate of how much better
+the observed accuracy (calculated as shown above) is than the expected accuracy
+(shown below). For example, if the expected accuracy is 50% (random chance) and the
+observed accuracy is 95%, <span class="math inline">\(\kappa\)</span> will be 0.90. This is especially useful when the
+class distribution is skewed. <span class="math inline">\(\kappa\)</span> can be calculated as shown:</p>
 <p><span class="math display">\[\begin{align}
 observations &amp;= n = TP + TN + FP + FN \\
 accuracy_{obs} &amp;= \frac{TP + TN}{n}\\
@@ -807,25 +833,25 @@ p(X)$). By default, if <span class="math inline">\(p(X) &gt; 0.5\)</span>, then 
 threshold can be manipulated in order to further evaluate the model fit. By plotting the
 <em>sensitivity</em> against [1 - <em>specificity</em>] for a range of threshold values, you get a
 <em>received operator characteristic</em> (ROC) chart:</p>
-<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="chapter-5.html#cb53-1" aria-hidden="true" tabindex="-1"></a>(iris_predictions</span>
-<span id="cb53-2"><a href="chapter-5.html#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">roc_curve</span>(<span class="at">truth =</span> setosa, .pred_TRUE) </span>
-<span id="cb53-3"><a href="chapter-5.html#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">autoplot</span>())</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="chapter-5.html#cb57-1" aria-hidden="true" tabindex="-1"></a>(iris_predictions</span>
+<span id="cb57-2"><a href="chapter-5.html#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">roc_curve</span>(<span class="at">truth =</span> setosa, .pred_TRUE) </span>
+<span id="cb57-3"><a href="chapter-5.html#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">autoplot</span>())</span></code></pre></div>
+<p><img src="_main_files/figure-html/ch5-3-1.png" width="672" /></p>
 <p>The dotted diagonal line represents the probability of randomly guessing the correct
 class, so you want to be as far from that line as possible! For a theoretical model
 making perfect predictions, the curve would rise straight up the left side then across
 the top. The <em>area under the curve</em> (AUC) is a value between 0 and 1 that provides a
 quantitative measurement of the performance indicated by the ROC curve. The closer this
 value is to 1, the better the model has performed.</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="chapter-5.html#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a set of metrics using the `yardstick` package</span></span>
-<span id="cb54-2"><a href="chapter-5.html#cb54-2" aria-hidden="true" tabindex="-1"></a>eval_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(ppv,    recall, specificity, accuracy, </span>
-<span id="cb54-3"><a href="chapter-5.html#cb54-3" aria-hidden="true" tabindex="-1"></a>                           f_meas, kap,    roc_auc)</span>
-<span id="cb54-4"><a href="chapter-5.html#cb54-4" aria-hidden="true" tabindex="-1"></a><span class="fu">eval_metrics</span>(</span>
-<span id="cb54-5"><a href="chapter-5.html#cb54-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> iris_predictions, </span>
-<span id="cb54-6"><a href="chapter-5.html#cb54-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">truth =</span> setosa, </span>
-<span id="cb54-7"><a href="chapter-5.html#cb54-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> .pred_class,</span>
-<span id="cb54-8"><a href="chapter-5.html#cb54-8" aria-hidden="true" tabindex="-1"></a>  .pred_TRUE  <span class="co"># to be passed to `roc_auc()`</span></span>
-<span id="cb54-9"><a href="chapter-5.html#cb54-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="chapter-5.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Define a set of metrics using the `yardstick` package</span></span>
+<span id="cb58-2"><a href="chapter-5.html#cb58-2" aria-hidden="true" tabindex="-1"></a>eval_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(ppv,    recall, specificity, accuracy, </span>
+<span id="cb58-3"><a href="chapter-5.html#cb58-3" aria-hidden="true" tabindex="-1"></a>                           f_meas, kap,    roc_auc)</span>
+<span id="cb58-4"><a href="chapter-5.html#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="fu">eval_metrics</span>(</span>
+<span id="cb58-5"><a href="chapter-5.html#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> iris_predictions, </span>
+<span id="cb58-6"><a href="chapter-5.html#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">truth =</span> setosa, </span>
+<span id="cb58-7"><a href="chapter-5.html#cb58-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> .pred_class,</span>
+<span id="cb58-8"><a href="chapter-5.html#cb58-8" aria-hidden="true" tabindex="-1"></a>  .pred_TRUE  <span class="co"># to be passed to `roc_auc()`</span></span>
+<span id="cb58-9"><a href="chapter-5.html#cb58-9" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>## # A tibble: 7 × 3
 ##   .metric     .estimator .estimate
 ##   &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt;
@@ -840,13 +866,14 @@ value is to 1, the better the model has performed.</p>
 <div id="ch5-multinomial-logistic-regression" class="section level3 hasAnchor" number="5.4.2">
 <h3><span class="header-section-number">5.4.2</span> Multinomial Logistic Regression<a href="chapter-5.html#ch5-multinomial-logistic-regression" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p>When expanding our predictive value to predicting <em>all</em> classes of iris species:</p>
-<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="chapter-5.html#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This recipe assumes that `Species` is predicted by all other values,</span></span>
-<span id="cb56-2"><a href="chapter-5.html#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="co"># creates interaction terms, and normalizes all the numeric predictors.</span></span>
-<span id="cb56-3"><a href="chapter-5.html#cb56-3" aria-hidden="true" tabindex="-1"></a>(iris_recipe</span>
-<span id="cb56-4"><a href="chapter-5.html#cb56-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Species <span class="sc">~</span> ., <span class="at">data =</span> iris_data)</span>
-<span id="cb56-5"><a href="chapter-5.html#cb56-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_interact</span>(Species <span class="sc">~</span> Sepal.Length<span class="sc">:</span>Sepal.Width)</span>
-<span id="cb56-6"><a href="chapter-5.html#cb56-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_interact</span>(Species <span class="sc">~</span> Petal.Length<span class="sc">:</span>Petal.Width)</span>
-<span id="cb56-7"><a href="chapter-5.html#cb56-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()))</span></code></pre></div>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="chapter-5.html#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># This recipe assumes that `Species` is predicted by all other values,</span></span>
+<span id="cb60-2"><a href="chapter-5.html#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="co"># creates interaction terms, and normalizes all the numeric predictors.</span></span>
+<span id="cb60-3"><a href="chapter-5.html#cb60-3" aria-hidden="true" tabindex="-1"></a>(iris_recipe</span>
+<span id="cb60-4"><a href="chapter-5.html#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Species <span class="sc">~</span> ., <span class="at">data =</span> iris_data)</span>
+<span id="cb60-5"><a href="chapter-5.html#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_rm</span>(setosa) <span class="co"># No cheating!</span></span>
+<span id="cb60-6"><a href="chapter-5.html#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_interact</span>(Species <span class="sc">~</span> Sepal.Length<span class="sc">:</span>Sepal.Width)</span>
+<span id="cb60-7"><a href="chapter-5.html#cb60-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_interact</span>(Species <span class="sc">~</span> Petal.Length<span class="sc">:</span>Petal.Width)</span>
+<span id="cb60-8"><a href="chapter-5.html#cb60-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()))</span></code></pre></div>
 <pre><code>## Recipe
 ## 
 ## Inputs:
@@ -857,94 +884,661 @@ value is to 1, the better the model has performed.</p>
 ## 
 ## Operations:
 ## 
+## Variables removed setosa
 ## Interactions with Species, Sepal.Length:Sepal.Width
 ## Interactions with Species, Petal.Length:Petal.Width
 ## Centering and scaling for all_numeric_predictors()</code></pre>
-<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="chapter-5.html#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the model</span></span>
-<span id="cb58-2"><a href="chapter-5.html#cb58-2" aria-hidden="true" tabindex="-1"></a>(iris_model</span>
-<span id="cb58-3"><a href="chapter-5.html#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">multinom_reg</span>()      <span class="co"># Since there are three possible classes</span></span>
-<span id="cb58-4"><a href="chapter-5.html#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">&quot;nnet&quot;</span>)  <span class="co"># Default for `multinom_reg`</span></span>
-<span id="cb58-5"><a href="chapter-5.html#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="chapter-5.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the model</span></span>
+<span id="cb62-2"><a href="chapter-5.html#cb62-2" aria-hidden="true" tabindex="-1"></a>(iris_model</span>
+<span id="cb62-3"><a href="chapter-5.html#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">multinom_reg</span>()      <span class="co"># Since there are three possible classes</span></span>
+<span id="cb62-4"><a href="chapter-5.html#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">&quot;nnet&quot;</span>)  <span class="co"># Default for `multinom_reg`</span></span>
+<span id="cb62-5"><a href="chapter-5.html#cb62-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>))</span></code></pre></div>
 <pre><code>## Multinomial Regression Model Specification (classification)
 ## 
 ## Computational engine: nnet</code></pre>
-<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="chapter-5.html#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bundle into a workflow (with fit)</span></span>
-<span id="cb60-2"><a href="chapter-5.html#cb60-2" aria-hidden="true" tabindex="-1"></a>(iris_workflow</span>
-<span id="cb60-3"><a href="chapter-5.html#cb60-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">workflow</span>()</span>
-<span id="cb60-4"><a href="chapter-5.html#cb60-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(iris_recipe)</span>
-<span id="cb60-5"><a href="chapter-5.html#cb60-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(iris_model)</span>
-<span id="cb60-6"><a href="chapter-5.html#cb60-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> iris_data))</span></code></pre></div>
-<pre><code>## ══ Workflow [trained] ══════════════════════════════════════════════════════════════════════════════
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="chapter-5.html#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bundle into a workflow (with fit)</span></span>
+<span id="cb64-2"><a href="chapter-5.html#cb64-2" aria-hidden="true" tabindex="-1"></a>(iris_workflow</span>
+<span id="cb64-3"><a href="chapter-5.html#cb64-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">workflow</span>()</span>
+<span id="cb64-4"><a href="chapter-5.html#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(iris_recipe)</span>
+<span id="cb64-5"><a href="chapter-5.html#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(iris_model)</span>
+<span id="cb64-6"><a href="chapter-5.html#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> iris_data))</span></code></pre></div>
+<pre><code>## ══ Workflow [trained] ═══════════════════════════════════════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: multinom_reg()
 ## 
-## ── Preprocessor ────────────────────────────────────────────────────────────────────────────────────
-## 3 Recipe Steps
+## ── Preprocessor ─────────────────────────────────────────────────────────────────────────────────────
+## 4 Recipe Steps
 ## 
+## • step_rm()
 ## • step_interact()
 ## • step_interact()
 ## • step_normalize()
 ## 
-## ── Model ───────────────────────────────────────────────────────────────────────────────────────────
+## ── Model ────────────────────────────────────────────────────────────────────────────────────────────
 ## Call:
 ## nnet::multinom(formula = ..y ~ ., data = data, trace = FALSE)
 ## 
 ## Coefficients:
-##            (Intercept) setosaFALSE Sepal.Length Sepal.Width Petal.Length Petal.Width
-## versicolor   -12.50946    22.23712   -2.3891417   -1.457228    3.2920305   10.021323
-## virginica    -13.02261    23.17391    0.9776328    2.126536   -0.1497605   -3.559197
-##            Sepal.Length_x_Sepal.Width Petal.Length_x_Petal.Width
-## versicolor                   3.301974                  -13.91689
-## virginica                   -2.833444                    6.01510
+##            (Intercept) Sepal.Length Sepal.Width Petal.Length Petal.Width Sepal.Length_x_Sepal.Width
+## versicolor   0.3185672    -1.562520  -4.3193520     5.836776   14.121343                   5.036399
+## virginica    0.9500096     1.757604  -0.1347156     2.114512    4.658676                  -1.056959
+##            Petal.Length_x_Petal.Width
+## versicolor                 -20.916383
+## virginica                   -5.287086
 ## 
-## Residual Deviance: 50.85561 
-## AIC: 82.85561</code></pre>
-<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="chapter-5.html#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to the input data</span></span>
-<span id="cb62-2"><a href="chapter-5.html#cb62-2" aria-hidden="true" tabindex="-1"></a>iris_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(iris_workflow, iris_data)</span>
-<span id="cb62-3"><a href="chapter-5.html#cb62-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb62-4"><a href="chapter-5.html#cb62-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a confusion matrix (table)</span></span>
-<span id="cb62-5"><a href="chapter-5.html#cb62-5" aria-hidden="true" tabindex="-1"></a>(confusion_matrix</span>
-<span id="cb62-6"><a href="chapter-5.html#cb62-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> iris_predictions</span>
-<span id="cb62-7"><a href="chapter-5.html#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">count</span>(Species, .pred_class)</span>
-<span id="cb62-8"><a href="chapter-5.html#cb62-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> .pred_class, <span class="at">values_from =</span> n))</span></code></pre></div>
+## Residual Deviance: 111.6001 
+## AIC: 139.6001</code></pre>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="chapter-5.html#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to the input data</span></span>
+<span id="cb66-2"><a href="chapter-5.html#cb66-2" aria-hidden="true" tabindex="-1"></a>iris_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(iris_workflow, iris_data)</span>
+<span id="cb66-3"><a href="chapter-5.html#cb66-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-4"><a href="chapter-5.html#cb66-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a confusion matrix (table)</span></span>
+<span id="cb66-5"><a href="chapter-5.html#cb66-5" aria-hidden="true" tabindex="-1"></a>(confusion_matrix</span>
+<span id="cb66-6"><a href="chapter-5.html#cb66-6" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> iris_predictions</span>
+<span id="cb66-7"><a href="chapter-5.html#cb66-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">count</span>(Species, .pred_class)</span>
+<span id="cb66-8"><a href="chapter-5.html#cb66-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> .pred_class, <span class="at">values_from =</span> n))</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 4
 ##   Species    setosa versicolor virginica
 ##   &lt;fct&gt;       &lt;int&gt;      &lt;int&gt;     &lt;int&gt;
-## 1 setosa         48         NA        NA
-## 2 versicolor     NA         47         5
-## 3 virginica      NA          7        43</code></pre>
-<p>Here we see that our relatively “un-tuned” model does a good job of identifying <em>setosa</em>
-species but struggles a bit more with <em>versicolor</em> and <em>virginica</em> (due in large part to
-our ‘tweaks’ to the data set). Each row represents the true class of the flower while
-each column represents the predicted class of each flower. In a perfect world, we would
-only have numbers on the diagonal. We can examine the same metrics as we did in the
-binomial case:</p>
-<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="chapter-5.html#cb64-1" aria-hidden="true" tabindex="-1"></a>eval_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(ppv,    recall, specificity, accuracy, </span>
-<span id="cb64-2"><a href="chapter-5.html#cb64-2" aria-hidden="true" tabindex="-1"></a>                           f_meas, kap,    roc_auc)</span>
-<span id="cb64-3"><a href="chapter-5.html#cb64-3" aria-hidden="true" tabindex="-1"></a><span class="fu">eval_metrics</span>(</span>
-<span id="cb64-4"><a href="chapter-5.html#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> iris_predictions, </span>
-<span id="cb64-5"><a href="chapter-5.html#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">truth =</span> Species, </span>
-<span id="cb64-6"><a href="chapter-5.html#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> .pred_class, </span>
-<span id="cb64-7"><a href="chapter-5.html#cb64-7" aria-hidden="true" tabindex="-1"></a>  .pred_setosa,      <span class="co"># to be passed to `roc_auc()`</span></span>
-<span id="cb64-8"><a href="chapter-5.html#cb64-8" aria-hidden="true" tabindex="-1"></a>  .pred_versicolor,  <span class="co"># / /</span></span>
-<span id="cb64-9"><a href="chapter-5.html#cb64-9" aria-hidden="true" tabindex="-1"></a>  .pred_virginica    <span class="co"># /</span></span>
-<span id="cb64-10"><a href="chapter-5.html#cb64-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+## 1 setosa         43          3         2
+## 2 versicolor      3         45         4
+## 3 virginica       2          4        44</code></pre>
+<p>Here we see that our relatively “un-tuned” model does a good job of identifying iris
+species with just a few mis-classifications (due in large part to our ‘tweaks’ to the
+data set). Each row represents the true class of the flower while each column represents
+the predicted class of each flower. In a perfect world, we would only have numbers on
+the diagonal. We can examine the same metrics as we did in the binomial case:</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="chapter-5.html#cb68-1" aria-hidden="true" tabindex="-1"></a>eval_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(ppv,    recall, specificity, accuracy, </span>
+<span id="cb68-2"><a href="chapter-5.html#cb68-2" aria-hidden="true" tabindex="-1"></a>                           f_meas, kap,    roc_auc)</span>
+<span id="cb68-3"><a href="chapter-5.html#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="fu">eval_metrics</span>(</span>
+<span id="cb68-4"><a href="chapter-5.html#cb68-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> iris_predictions, </span>
+<span id="cb68-5"><a href="chapter-5.html#cb68-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">truth =</span> Species, </span>
+<span id="cb68-6"><a href="chapter-5.html#cb68-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> .pred_class, </span>
+<span id="cb68-7"><a href="chapter-5.html#cb68-7" aria-hidden="true" tabindex="-1"></a>  .pred_setosa,      <span class="co"># to be passed to `roc_auc()`</span></span>
+<span id="cb68-8"><a href="chapter-5.html#cb68-8" aria-hidden="true" tabindex="-1"></a>  .pred_versicolor,  <span class="co"># / /</span></span>
+<span id="cb68-9"><a href="chapter-5.html#cb68-9" aria-hidden="true" tabindex="-1"></a>  .pred_virginica    <span class="co"># /</span></span>
+<span id="cb68-10"><a href="chapter-5.html#cb68-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <pre><code>## # A tibble: 7 × 3
 ##   .metric     .estimator .estimate
 ##   &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt;
-## 1 ppv         macro          0.922
-## 2 recall      macro          0.921
-## 3 specificity macro          0.960
-## 4 accuracy    multiclass     0.92 
-## 5 f_meas      macro          0.921
-## 6 kap         multiclass     0.880
-## 7 roc_auc     hand_till      0.986</code></pre>
+## 1 ppv         macro          0.880
+## 2 recall      macro          0.880
+## 3 specificity macro          0.940
+## 4 accuracy    multiclass     0.88 
+## 5 f_meas      macro          0.880
+## 6 kap         multiclass     0.820
+## 7 roc_auc     hand_till      0.956</code></pre>
 </div>
 </div>
 <div id="ch5-example" class="section level2 hasAnchor" number="5.5">
 <h2><span class="header-section-number">5.5</span> Example<a href="chapter-5.html#ch5-example" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p><em>This section is currently under construction</em></p>
+<div id="dataset" class="section level3 hasAnchor" number="5.5.1">
+<h3><span class="header-section-number">5.5.1</span> Dataset<a href="chapter-5.html#dataset" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>For our example logistic regression, let’s attempt to classify diamonds by expected
+‘price class’ using the <code>diamonds</code> dataset.</p>
+<div class="sourceCode r" style="padding:1em;">
+<!DOCTYPE html><html><head><title>R: Prices of over 50,000 round cut diamonds</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css">
+<script type="text/javascript">
+const macros = { "\\R": "\\textsf{R}", "\\code": "\\texttt"};
+function processMathHTML() {
+    var l = document.getElementsByClassName('reqn');
+    for (let e of l) { katex.render(e.textContent, e, { throwOnError: false, macros }); }
+    return;
+}</script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js"
+    onload="processMathHTML();"></script>
+<link rel="stylesheet" type="text/css" href="R.css" />
+</head><body><div class="container">
 
+<table style="width: 100%;"><tr><td>diamonds</td><td style="text-align: right;">R Documentation</td></tr></table>
+
+<h2>Prices of over 50,000 round cut diamonds</h2>
+
+<h3>Description</h3>
+
+<p>A dataset containing the prices and other attributes of almost 54,000
+diamonds. The variables are as follows:
+</p>
+
+
+<h3>Usage</h3>
+
+<pre><code class='language-R'>diamonds
+</code></pre>
+
+
+<h3>Format</h3>
+
+<p>A data frame with 53940 rows and 10 variables:
+</p>
+
+<dl>
+<dt>price</dt><dd><p>price in US dollars (\$326&ndash;\$18,823)</p>
+</dd>
+<dt>carat</dt><dd><p>weight of the diamond (0.2&ndash;5.01)</p>
+</dd>
+<dt>cut</dt><dd><p>quality of the cut (Fair, Good, Very Good, Premium, Ideal)</p>
+</dd>
+<dt>color</dt><dd><p>diamond colour, from D (best) to J (worst)</p>
+</dd>
+<dt>clarity</dt><dd><p>a measurement of how clear the diamond is (I1 (worst), SI2,
+SI1, VS2, VS1, VVS2, VVS1, IF (best))</p>
+</dd>
+<dt>x</dt><dd><p>length in mm (0&ndash;10.74)</p>
+</dd>
+<dt>y</dt><dd><p>width in mm (0&ndash;58.9)</p>
+</dd>
+<dt>z</dt><dd><p>depth in mm (0&ndash;31.8)</p>
+</dd>
+<dt>depth</dt><dd><p>total depth percentage = z / mean(x, y) = 2 * z / (x + y) (43&ndash;79)</p>
+</dd>
+<dt>table</dt><dd><p>width of top of diamond relative to widest point (43&ndash;95)</p>
+</dd>
+</dl>
+
+
+
+</div>
+</body></html>
+</div>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="chapter-5.html#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">skim</span>(diamonds)</span></code></pre></div>
+<table>
+<caption><span id="tab:ch5-8">Table 5.3: </span>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td align="left">Name</td>
+<td align="left">diamonds</td>
+</tr>
+<tr class="even">
+<td align="left">Number of rows</td>
+<td align="left">53940</td>
+</tr>
+<tr class="odd">
+<td align="left">Number of columns</td>
+<td align="left">10</td>
+</tr>
+<tr class="even">
+<td align="left">_______________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Column type frequency:</td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">factor</td>
+<td align="left">3</td>
+</tr>
+<tr class="odd">
+<td align="left">numeric</td>
+<td align="left">7</td>
+</tr>
+<tr class="even">
+<td align="left">________________________</td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Group variables</td>
+<td align="left">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: factor</strong></p>
+<table>
+<colgroup>
+<col width="13%" />
+<col width="9%" />
+<col width="13%" />
+<col width="7%" />
+<col width="8%" />
+<col width="45%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="left">ordered</th>
+<th align="right">n_unique</th>
+<th align="left">top_counts</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">cut</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="right">5</td>
+<td align="left">Ide: 21551, Pre: 13791, Ver: 12082, Goo: 4906</td>
+</tr>
+<tr class="even">
+<td align="left">color</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="right">7</td>
+<td align="left">G: 11292, E: 9797, F: 9542, H: 8304</td>
+</tr>
+<tr class="odd">
+<td align="left">clarity</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+<td align="right">8</td>
+<td align="left">SI1: 13065, VS2: 12258, SI2: 9194, VS1: 8171</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table style="width:100%;">
+<colgroup>
+<col width="14%" />
+<col width="10%" />
+<col width="14%" />
+<col width="8%" />
+<col width="8%" />
+<col width="6%" />
+<col width="7%" />
+<col width="8%" />
+<col width="8%" />
+<col width="9%" />
+<col width="6%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">skim_variable</th>
+<th align="right">n_missing</th>
+<th align="right">complete_rate</th>
+<th align="right">mean</th>
+<th align="right">sd</th>
+<th align="right">p0</th>
+<th align="right">p25</th>
+<th align="right">p50</th>
+<th align="right">p75</th>
+<th align="right">p100</th>
+<th align="left">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">carat</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">0.80</td>
+<td align="right">0.47</td>
+<td align="right">0.2</td>
+<td align="right">0.40</td>
+<td align="right">0.70</td>
+<td align="right">1.04</td>
+<td align="right">5.01</td>
+<td align="left">▇▂▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">depth</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">61.75</td>
+<td align="right">1.43</td>
+<td align="right">43.0</td>
+<td align="right">61.00</td>
+<td align="right">61.80</td>
+<td align="right">62.50</td>
+<td align="right">79.00</td>
+<td align="left">▁▁▇▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">table</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">57.46</td>
+<td align="right">2.23</td>
+<td align="right">43.0</td>
+<td align="right">56.00</td>
+<td align="right">57.00</td>
+<td align="right">59.00</td>
+<td align="right">95.00</td>
+<td align="left">▁▇▁▁▁</td>
+</tr>
+<tr class="even">
+<td align="left">price</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3932.80</td>
+<td align="right">3989.44</td>
+<td align="right">326.0</td>
+<td align="right">950.00</td>
+<td align="right">2401.00</td>
+<td align="right">5324.25</td>
+<td align="right">18823.00</td>
+<td align="left">▇▂▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">x</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">5.73</td>
+<td align="right">1.12</td>
+<td align="right">0.0</td>
+<td align="right">4.71</td>
+<td align="right">5.70</td>
+<td align="right">6.54</td>
+<td align="right">10.74</td>
+<td align="left">▁▁▇▃▁</td>
+</tr>
+<tr class="even">
+<td align="left">y</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">5.73</td>
+<td align="right">1.14</td>
+<td align="right">0.0</td>
+<td align="right">4.72</td>
+<td align="right">5.71</td>
+<td align="right">6.54</td>
+<td align="right">58.90</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+<tr class="odd">
+<td align="left">z</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">3.54</td>
+<td align="right">0.71</td>
+<td align="right">0.0</td>
+<td align="right">2.91</td>
+<td align="right">3.53</td>
+<td align="right">4.04</td>
+<td align="right">31.80</td>
+<td align="left">▇▁▁▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="response-categories" class="section level3 hasAnchor" number="5.5.2">
+<h3><span class="header-section-number">5.5.2</span> Response Categories<a href="chapter-5.html#response-categories" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Because I know I want to predict a ‘price class’ as a category instead of as continuous
+value, I should try to determine how large the range of prices in each category should
+be. Ideally, each price category should contain a comparable number of observations.
+You’d also want to consider the business use case here, but since this is an example of
+logistic regression modeling more than a primer on the diamond trade, let’s stick to
+making roughly equal size groups. Let’s take a look a the distribution of <code>price</code>.</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="chapter-5.html#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diamonds, <span class="fu">aes</span>(price)) <span class="sc">+</span></span>
+<span id="cb71-2"><a href="chapter-5.html#cb71-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">50</span>) <span class="sc">+</span></span>
+<span id="cb71-3"><a href="chapter-5.html#cb71-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/ch5-9-1.png" width="672" /></p>
+<p>Oh, well, that’s troublesome. Looks like we’ll need to log-transform <code>price</code> if we want
+it to be evenly distributed across the range.</p>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="chapter-5.html#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diamonds, <span class="fu">aes</span>(<span class="fu">log</span>(price))) <span class="sc">+</span></span>
+<span id="cb72-2"><a href="chapter-5.html#cb72-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">50</span>) <span class="sc">+</span></span>
+<span id="cb72-3"><a href="chapter-5.html#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/ch5-10-1.png" width="672" /></p>
+<p>That’s <em>much</em> better. Now, let’s identify the optimal interval size:</p>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="chapter-5.html#cb73-1" aria-hidden="true" tabindex="-1"></a>(<span class="fu">tibble</span>(<span class="at">buckets =</span> <span class="fu">seq_len</span>(<span class="dv">10</span>))</span>
+<span id="cb73-2"><a href="chapter-5.html#cb73-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">.calc =</span> <span class="fu">map</span>(buckets, <span class="sc">~</span> (</span>
+<span id="cb73-3"><a href="chapter-5.html#cb73-3" aria-hidden="true" tabindex="-1"></a>    diamonds</span>
+<span id="cb73-4"><a href="chapter-5.html#cb73-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">bucket =</span> <span class="fu">cut_interval</span>(<span class="fu">log</span>(price), .x))</span>
+<span id="cb73-5"><a href="chapter-5.html#cb73-5" aria-hidden="true" tabindex="-1"></a>    <span class="sc">|&gt;</span> <span class="fu">count</span>(bucket)</span>
+<span id="cb73-6"><a href="chapter-5.html#cb73-6" aria-hidden="true" tabindex="-1"></a>    <span class="sc">|&gt;</span> <span class="fu">summarise</span>(</span>
+<span id="cb73-7"><a href="chapter-5.html#cb73-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean_obs =</span> <span class="fu">mean</span>(n), </span>
+<span id="cb73-8"><a href="chapter-5.html#cb73-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">sd_obs   =</span> <span class="fu">sd</span>(n),</span>
+<span id="cb73-9"><a href="chapter-5.html#cb73-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">min_obs  =</span> <span class="fu">min</span>(n),</span>
+<span id="cb73-10"><a href="chapter-5.html#cb73-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">max_obs  =</span> <span class="fu">max</span>(n),</span>
+<span id="cb73-11"><a href="chapter-5.html#cb73-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">range    =</span> max_obs <span class="sc">-</span> min_obs,</span>
+<span id="cb73-12"><a href="chapter-5.html#cb73-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb73-13"><a href="chapter-5.html#cb73-13" aria-hidden="true" tabindex="-1"></a>  )))</span>
+<span id="cb73-14"><a href="chapter-5.html#cb73-14" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">unnest</span>(.calc))</span></code></pre></div>
+<pre><code>## # A tibble: 10 × 6
+##    buckets mean_obs sd_obs min_obs max_obs range
+##      &lt;int&gt;    &lt;dbl&gt;  &lt;dbl&gt;   &lt;int&gt;   &lt;int&gt; &lt;int&gt;
+##  1       1   53940     NA    53940   53940     0
+##  2       2   26970    617.   26534   27406   872
+##  3       3   17980   2635.   15241   20498  5257
+##  4       4   13485   3230.    9581   16953  7372
+##  5       5   10788   2991.    7144   13443  6299
+##  6       6    8990   3078.    5200   13001  7801
+##  7       7    7706.  2854.    3665   11568  7903
+##  8       8    6742.  2491.    2618    9681  7063
+##  9       9    5993.  2195.    1997    8258  6261
+## 10      10    5394   2106.    1553    8400  6847</code></pre>
+<p>It looks like 5 groups provides a good balance between the class sizes and the number of
+classes.</p>
+</div>
+<div id="correlations" class="section level3 hasAnchor" number="5.5.3">
+<h3><span class="header-section-number">5.5.3</span> Correlations<a href="chapter-5.html#correlations" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Let’s start by establishing the correlations amongst the numeric variables in this
+dataset:</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="chapter-5.html#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a scatterplot matrix to identify correlations</span></span>
+<span id="cb75-2"><a href="chapter-5.html#cb75-2" aria-hidden="true" tabindex="-1"></a>columns <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;price&quot;</span>, <span class="st">&quot;carat&quot;</span>, <span class="st">&quot;depth&quot;</span>, <span class="st">&quot;table&quot;</span>, <span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;z&quot;</span>)</span>
+<span id="cb75-3"><a href="chapter-5.html#cb75-3" aria-hidden="true" tabindex="-1"></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(diamonds, <span class="at">columns =</span> columns, <span class="at">progress =</span> F)</span></code></pre></div>
+<p><img src="_main_files/figure-html/ch5-12-1.png" width="672" /></p>
+<p>We can make a few observations here:</p>
+<ul>
+<li><p>The various size parameters: <code>carat</code>, <code>x</code>, <code>y</code>, and <code>z</code> are all highly correlated,
+as may be expected.</p></li>
+<li><p>The shape of the distribution for <code>carat</code> indicates that it may be best used when
+log-transformed (a left-biased distribution with a long tail).</p></li>
+<li><p><code>price</code> is very highly correlated with <code>carat</code>, as might be expected from a layman’s
+understanding of how diamonds are priced. Bigger is better!</p></li>
+</ul>
+<p>There are a few categorical variables as well that we should examine:</p>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="chapter-5.html#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diamonds, <span class="fu">aes</span>(price, carat, <span class="at">color =</span> cut)) <span class="sc">+</span></span>
+<span id="cb76-2"><a href="chapter-5.html#cb76-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb76-3"><a href="chapter-5.html#cb76-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/ch5-13-1.png" width="672" /></p>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="chapter-5.html#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diamonds, <span class="fu">aes</span>(price, carat, <span class="at">color =</span> color)) <span class="sc">+</span></span>
+<span id="cb77-2"><a href="chapter-5.html#cb77-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb77-3"><a href="chapter-5.html#cb77-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/ch5-14-1.png" width="672" /></p>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="chapter-5.html#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diamonds, <span class="fu">aes</span>(price, carat, <span class="at">color =</span> clarity)) <span class="sc">+</span></span>
+<span id="cb78-2"><a href="chapter-5.html#cb78-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb78-3"><a href="chapter-5.html#cb78-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/ch5-15-1.png" width="672" /></p>
+<p>There appears to be <em>some</em> variation in <code>price</code>/<code>carat</code> based on these categorical
+values, but it’s not extremely pronounced. The patterns are perhaps more easily
+observable on the correlogram.</p>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="chapter-5.html#cb79-1" aria-hidden="true" tabindex="-1"></a>columns <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;price&quot;</span>, <span class="st">&quot;cut&quot;</span>, <span class="st">&quot;color&quot;</span>, <span class="st">&quot;clarity&quot;</span>)</span>
+<span id="cb79-2"><a href="chapter-5.html#cb79-2" aria-hidden="true" tabindex="-1"></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(diamonds, <span class="at">columns =</span> columns, <span class="at">progress =</span> F)</span></code></pre></div>
+<p><img src="_main_files/figure-html/ch5-16-1.png" width="672" /></p>
+<p>There appears to be <em>some</em> correlation between <code>color</code>, <code>cut</code>, and <code>clarity</code>, with the
+most pronounced between <code>color</code> and <code>cut</code>. If we knew more about the diamond pricing
+market, we might infer that certain cuts are preferred for certain colors of diamond,
+but that’s just conjecture at this point. We’ll choose to add an interaction term for
+<code>color:cut</code>, but there’s probably room for more experimentation on this point.</p>
+</div>
+<div id="high-leverage-points" class="section level3 hasAnchor" number="5.5.4">
+<h3><span class="header-section-number">5.5.4</span> High Leverage Points<a href="chapter-5.html#high-leverage-points" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>Recall, that <em>high-leverage points</em> are those observations where the observed values
+fall well outside the range of the majority of the observed values. Since we only have
+one continuous predictor variable (<code>carat</code>), any high-leverage points should be pretty
+easy to find. (Note, recall that above we indicated a that we should log-transform
+<code>carat</code> due to its distribution, so we should do that here as well).</p>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="chapter-5.html#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(diamonds, <span class="fu">aes</span>(<span class="fu">factor</span>(<span class="dv">1</span>), <span class="fu">log</span>(carat))) <span class="sc">+</span></span>
+<span id="cb80-2"><a href="chapter-5.html#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb80-3"><a href="chapter-5.html#cb80-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div>
+<p><img src="_main_files/figure-html/ch5-17-1.png" width="672" /></p>
+<p>Looks like there are two values for <code>carat</code> that fall way outside the range of the
+majority of the values. Let’s find them:</p>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="chapter-5.html#cb81-1" aria-hidden="true" tabindex="-1"></a>(diamonds</span>
+<span id="cb81-2"><a href="chapter-5.html#cb81-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(carat))</span>
+<span id="cb81-3"><a href="chapter-5.html#cb81-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">head</span>(<span class="dv">2</span>)</span>
+<span id="cb81-4"><a href="chapter-5.html#cb81-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">pull</span>(carat)</span>
+<span id="cb81-5"><a href="chapter-5.html#cb81-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">log</span>()</span>
+<span id="cb81-6"><a href="chapter-5.html#cb81-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">2</span>))</span></code></pre></div>
+<pre><code>## [1] 1.61 1.50</code></pre>
+<p>Just for fun, let’s check the normal range for <code>carat</code>:</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="chapter-5.html#cb83-1" aria-hidden="true" tabindex="-1"></a>mean_carat <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">log</span>(diamonds<span class="sc">$</span>carat)) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb83-2"><a href="chapter-5.html#cb83-2" aria-hidden="true" tabindex="-1"></a>sd_carat   <span class="ot">&lt;-</span> <span class="fu">sd</span>(<span class="fu">log</span>(diamonds<span class="sc">$</span>carat)) <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">2</span>)</span>
+<span id="cb83-3"><a href="chapter-5.html#cb83-3" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(mean_carat, <span class="st">&quot;+/-&quot;</span>, sd_carat)</span></code></pre></div>
+<pre><code>## [1] &quot;-0.39 +/- 0.58&quot;</code></pre>
+<p>Those values are more than 3 standard deviations away from the mean of <em>log</em> <code>carat</code>. To
+be on the safe side, let’s exclude any observations where <code>log(carat)</code> lies 3 or more
+standard deviations from the mean.</p>
+</div>
+<div id="fit-and-check" class="section level3 hasAnchor" number="5.5.5">
+<h3><span class="header-section-number">5.5.5</span> Fit and Check<a href="chapter-5.html#fit-and-check" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>From exploring the dataset, I’ve decided to:</p>
+<ul>
+<li><p>Log-transform <code>price</code> then add each transformed price to one of 5 classes, depending
+on its value.</p></li>
+<li><p>Use <code>carat</code>, <code>cut</code>, <code>clarity</code>, and <code>color</code> as predictor variables.</p></li>
+<li><p>Log-transform <code>carat</code> prior to training the model.</p></li>
+<li><p>Remove observations where <code>log(carat)</code> is 3 or more standard deviations away from
+the mean as high-leverage observations.</p></li>
+<li><p>Add an interaction parameter for <code>color:cut</code>.</p></li>
+</ul>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="chapter-5.html#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">800633</span>)</span>
+<span id="cb85-2"><a href="chapter-5.html#cb85-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-3"><a href="chapter-5.html#cb85-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Modification to response variables should not be part of the workflow</span></span>
+<span id="cb85-4"><a href="chapter-5.html#cb85-4" aria-hidden="true" tabindex="-1"></a>mod_diamonds <span class="ot">&lt;-</span> <span class="fu">mutate</span>(diamonds, <span class="at">price_cat =</span> <span class="fu">cut_interval</span>(<span class="fu">log</span>(price), <span class="dv">5</span>))</span>
+<span id="cb85-5"><a href="chapter-5.html#cb85-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-6"><a href="chapter-5.html#cb85-6" aria-hidden="true" tabindex="-1"></a>mod_diamonds_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(mod_diamonds)</span>
+<span id="cb85-7"><a href="chapter-5.html#cb85-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-8"><a href="chapter-5.html#cb85-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify the recipe, using the preparation steps described above</span></span>
+<span id="cb85-9"><a href="chapter-5.html#cb85-9" aria-hidden="true" tabindex="-1"></a>(log_reg_recipe</span>
+<span id="cb85-10"><a href="chapter-5.html#cb85-10" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">recipe</span>(price_cat <span class="sc">~</span> carat <span class="sc">+</span> cut <span class="sc">+</span> color <span class="sc">+</span> clarity,</span>
+<span id="cb85-11"><a href="chapter-5.html#cb85-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> mod_diamonds)</span>
+<span id="cb85-12"><a href="chapter-5.html#cb85-12" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_log</span>(carat)</span>
+<span id="cb85-13"><a href="chapter-5.html#cb85-13" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_filter</span>(<span class="fu">abs</span>(carat <span class="sc">-</span> <span class="fu">mean</span>(carat)) <span class="sc">&lt;</span> (<span class="fu">sd</span>(carat) <span class="sc">*</span> <span class="dv">3</span>))</span>
+<span id="cb85-14"><a href="chapter-5.html#cb85-14" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>())</span>
+<span id="cb85-15"><a href="chapter-5.html#cb85-15" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_interact</span>(price_cat <span class="sc">~</span> <span class="fu">starts_with</span>(<span class="st">&quot;color_&quot;</span>)<span class="sc">:</span><span class="fu">starts_with</span>(<span class="st">&quot;cut_&quot;</span>)))</span></code></pre></div>
+<pre><code>## Recipe
+## 
+## Inputs:
+## 
+##       role #variables
+##    outcome          1
+##  predictor          4
+## 
+## Operations:
+## 
+## Log transformation on carat
+## Row filtering using abs(carat - mean(carat)) &lt; (sd(carat) * 3)
+## Dummy variables from all_nominal_predictors()
+## Interactions with price_cat, starts_with(&quot;color_&quot;):starts_with(&quot;cut_&quot;)</code></pre>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="chapter-5.html#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup the model</span></span>
+<span id="cb87-2"><a href="chapter-5.html#cb87-2" aria-hidden="true" tabindex="-1"></a>(log_reg_model</span>
+<span id="cb87-3"><a href="chapter-5.html#cb87-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">multinom_reg</span>()</span>
+<span id="cb87-4"><a href="chapter-5.html#cb87-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">&quot;nnet&quot;</span>)</span>
+<span id="cb87-5"><a href="chapter-5.html#cb87-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_mode</span>(<span class="st">&quot;classification&quot;</span>))</span></code></pre></div>
+<pre><code>## Multinomial Regression Model Specification (classification)
+## 
+## Computational engine: nnet</code></pre>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb89-1"><a href="chapter-5.html#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bundle the recipe and model into a workflow, fit the model</span></span>
+<span id="cb89-2"><a href="chapter-5.html#cb89-2" aria-hidden="true" tabindex="-1"></a>(log_reg_workflow</span>
+<span id="cb89-3"><a href="chapter-5.html#cb89-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">workflow</span>()</span>
+<span id="cb89-4"><a href="chapter-5.html#cb89-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(log_reg_recipe)</span>
+<span id="cb89-5"><a href="chapter-5.html#cb89-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(log_reg_model)</span>
+<span id="cb89-6"><a href="chapter-5.html#cb89-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> <span class="fu">training</span>(mod_diamonds_split)))</span></code></pre></div>
+<pre><code>## ══ Workflow [trained] ═══════════════════════════════════════════════════════════════════════════════
+## Preprocessor: Recipe
+## Model: multinom_reg()
+## 
+## ── Preprocessor ─────────────────────────────────────────────────────────────────────────────────────
+## 4 Recipe Steps
+## 
+## • step_log()
+## • step_filter()
+## • step_dummy()
+## • step_interact()
+## 
+## ── Model ────────────────────────────────────────────────────────────────────────────────────────────
+## Call:
+## nnet::multinom(formula = ..y ~ ., data = data, trace = FALSE)
+## 
+## Coefficients:
+##             (Intercept)    carat    cut_1     cut_2     cut_3     cut_4   color_1     color_2
+## (6.6,7.41]     14.77133 14.98926 4.106441 -3.569287 1.3668315 -2.011030 -2.848696 -0.03877709
+## (7.41,8.22]    25.23687 32.12698 3.895234 -3.037634 0.5433772 -1.746210 -5.919968  0.17077340
+## (8.22,9.03]    27.02919 46.56542 5.066777 -3.195376 0.9064511 -1.378375 -8.423160 -0.10510982
+## (9.03,9.84]    21.85345 59.44266 7.601931 -4.935027 2.6772676 -1.714478 -9.793854 -1.65460281
+##               color_3     color_4     color_5    color_6 clarity_1  clarity_2  clarity_3  clarity_4
+## (6.6,7.41]  2.1058502  0.06402263 -0.39966774 -0.6704520  7.806147  0.7449121 -0.2797165  0.6140537
+## (7.41,8.22] 0.8627596 -0.49520457  0.08630286 -0.1890811 15.557550  0.3599709 -0.3223965  2.0028156
+## (8.22,9.03] 0.6231886 -0.06351782  0.14218674 -0.8032102 21.285218 -1.0968904  1.0169551  0.8260622
+## (9.03,9.84] 0.4438435 -0.44292761  0.43035152 -1.9180478 29.222613 -5.9869350  3.7545372 -1.1978647
+##              clarity_5 clarity_6 clarity_7 color_1_x_cut_1 color_1_x_cut_2 color_1_x_cut_3
+## (6.6,7.41]  -0.4483736 0.3632309 0.6256839       -1.888081       -5.772038        1.358870
+## (7.41,8.22] -0.5171474 0.5503920 0.8737247       -6.663059       -3.452039       -2.487619
+## (8.22,9.03] -1.2763157 0.0479671 0.6268565       -6.465506       -2.468129       -2.750882
+## (9.03,9.84]  0.6341891 0.9096949 1.3602075      -12.137445        2.230262       -5.166862
+##             color_1_x_cut_4 color_2_x_cut_1 color_2_x_cut_2 color_2_x_cut_3 color_2_x_cut_4
+## (6.6,7.41]       -2.0890335       1.5252801      -3.0902028       0.8809812       0.3365358
+## (7.41,8.22]       1.4108126      -0.9267690      -1.3385217      -2.0378257       1.5823993
+## (8.22,9.03]      -0.5081945      -0.7446158       0.7016114      -3.0166846       3.4134568
+## (9.03,9.84]       0.2651442       1.2777073       0.2345068      -1.0267471       3.2055242
+##             color_3_x_cut_1 color_3_x_cut_2 color_3_x_cut_3 color_3_x_cut_4 color_4_x_cut_1
+## (6.6,7.41]       -0.7423168       -2.467593       0.3167168       0.4632866        1.991268
+## (7.41,8.22]       0.6897983       -2.892903       0.5723597       0.5996124        2.938301
+## (8.22,9.03]       2.5698649       -2.275121       1.6777016       1.3828688        2.764084
+## (9.03,9.84]       2.3537641       -2.189823       2.9626609       1.7180650        3.093712
+##             color_4_x_cut_2 color_4_x_cut_3 color_4_x_cut_4 color_5_x_cut_1 color_5_x_cut_2
+## (6.6,7.41]        -4.183403      1.27063921       0.3216012       1.0628629      0.03580568
+## (7.41,8.22]       -4.353914      3.34454302       0.5546513      -1.2086507      0.78604881
+## (8.22,9.03]       -5.145836      3.72353328       1.4893282      -0.1674063      0.21505487
+## (9.03,9.84]       -2.133068      0.02659431      -0.1138213      -2.9317166      2.95632557
+##             color_5_x_cut_3 color_5_x_cut_4 color_6_x_cut_1 color_6_x_cut_2 color_6_x_cut_3
+## (6.6,7.41]       -1.2692962      -0.5879730      -0.3521551      0.02457326      -1.1774001
+## (7.41,8.22]       1.7574518      -0.4392463      -4.4523729      2.43067566       0.3927754
+## (8.22,9.03]       2.1639698       0.2834687      -2.1473629      1.11493030       0.1150996
+## (9.03,9.84]       0.8466614       0.4828583       1.4863675     -2.46947278       3.4413292
+##             color_6_x_cut_4
+## (6.6,7.41]        0.1110854
+## (7.41,8.22]      -0.3388539
+## (8.22,9.03]       0.6050693
+## (9.03,9.84]      -0.7874513
+## 
+## Residual Deviance: 30240.06 
+## AIC: 30584.06</code></pre>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="chapter-5.html#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to training data</span></span>
+<span id="cb91-2"><a href="chapter-5.html#cb91-2" aria-hidden="true" tabindex="-1"></a>log_reg_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(log_reg_workflow, <span class="fu">testing</span>(mod_diamonds_split))</span>
+<span id="cb91-3"><a href="chapter-5.html#cb91-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb91-4"><a href="chapter-5.html#cb91-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Check performance using the same set of metrics as we did previously</span></span>
+<span id="cb91-5"><a href="chapter-5.html#cb91-5" aria-hidden="true" tabindex="-1"></a>eval_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(</span>
+<span id="cb91-6"><a href="chapter-5.html#cb91-6" aria-hidden="true" tabindex="-1"></a>  ppv,      recall, specificity, </span>
+<span id="cb91-7"><a href="chapter-5.html#cb91-7" aria-hidden="true" tabindex="-1"></a>  accuracy, f_meas, kap,    </span>
+<span id="cb91-8"><a href="chapter-5.html#cb91-8" aria-hidden="true" tabindex="-1"></a>  roc_auc</span>
+<span id="cb91-9"><a href="chapter-5.html#cb91-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb91-10"><a href="chapter-5.html#cb91-10" aria-hidden="true" tabindex="-1"></a><span class="fu">eval_metrics</span>(</span>
+<span id="cb91-11"><a href="chapter-5.html#cb91-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> log_reg_predictions, </span>
+<span id="cb91-12"><a href="chapter-5.html#cb91-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">truth =</span> price_cat, </span>
+<span id="cb91-13"><a href="chapter-5.html#cb91-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimate =</span> .pred_class, </span>
+<span id="cb91-14"><a href="chapter-5.html#cb91-14" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">.pred_[5.79,6.6]</span><span class="st">`</span>,</span>
+<span id="cb91-15"><a href="chapter-5.html#cb91-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">.pred_(6.6,7.41]</span><span class="st">`</span>,</span>
+<span id="cb91-16"><a href="chapter-5.html#cb91-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">.pred_(7.41,8.22]</span><span class="st">`</span>,</span>
+<span id="cb91-17"><a href="chapter-5.html#cb91-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">.pred_(8.22,9.03]</span><span class="st">`</span>,</span>
+<span id="cb91-18"><a href="chapter-5.html#cb91-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">.pred_(9.03,9.84]</span><span class="st">`</span></span>
+<span id="cb91-19"><a href="chapter-5.html#cb91-19" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>## # A tibble: 7 × 3
+##   .metric     .estimator .estimate
+##   &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt;
+## 1 ppv         macro          0.851
+## 2 recall      macro          0.842
+## 3 specificity macro          0.961
+## 4 accuracy    multiclass     0.847
+## 5 f_meas      macro          0.846
+## 6 kap         multiclass     0.806
+## 7 roc_auc     hand_till      0.978</code></pre>
+<p>The metrics look pretty good, let’s take a look at the confusion matrix…</p>
+<div class="sourceCode" id="cb93"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb93-1"><a href="chapter-5.html#cb93-1" aria-hidden="true" tabindex="-1"></a>(log_reg_predictions</span>
+<span id="cb93-2"><a href="chapter-5.html#cb93-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">count</span>(price_cat, .pred_class)</span>
+<span id="cb93-3"><a href="chapter-5.html#cb93-3" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">pivot_wider</span>(<span class="at">names_from =</span> .pred_class, <span class="at">values_from =</span> n))</span></code></pre></div>
+<pre><code>## # A tibble: 5 × 6
+##   price_cat   `[5.79,6.6]` `(6.6,7.41]` `(7.41,8.22]` `(8.22,9.03]` `(9.03,9.84]`
+##   &lt;fct&gt;              &lt;int&gt;        &lt;int&gt;         &lt;int&gt;         &lt;int&gt;         &lt;int&gt;
+## 1 [5.79,6.6]          1546          454            NA            NA            NA
+## 2 (6.6,7.41]           290         2636           292            NA            NA
+## 3 (7.41,8.22]            1          130          2680           233            NA
+## 4 (8.22,9.03]           NA           NA           202          2984           191
+## 5 (9.03,9.84]           NA           NA            NA           267          1579</code></pre>
+<p>All told, our classifier seems to be working OK. Most of the time, we’re correctly
+predicted the price category for each observation in the testing set, and when we
+mis-classify the price category we are (with one single exception) picking the price
+category above or below the true category.</p>
+
+</div>
 </div>
 </div>
 <div class="footnotes">

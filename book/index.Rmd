@@ -24,6 +24,7 @@ library(tidymodels)
 library(tidyverse)
 library(glue)
 library(GGally)
+library(skimr)
 ```
 
 # About {#chapter-1}

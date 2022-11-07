@@ -1,4 +1,6 @@
-tab:unnamed-chunk-9
+tab:ch5-1
+tab:ch5-2
+tab:ch5-8
 chapter-1
 ch1-software_used
 chapter-2
@@ -55,4 +57,9 @@ ch5-evaluating-fit
 ch5-binomial-logistic-regression
 ch5-multinomial-logistic-regression
 ch5-example
+dataset
+response-categories
+correlations
+high-leverage-points
+fit-and-check
 references

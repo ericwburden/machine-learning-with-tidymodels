@@ -61,7 +61,7 @@ given that there are $K$ possible values for $Y$, one possible $K$ is chosen as 
 default, or *baseline* value. Consider the example of a model to classify flower species
 using the `iris` data set.
 
-```{r echo=FALSE}
+```{r ch5-1}
 skimr::skim(iris)
 ```
 
@@ -109,8 +109,8 @@ categories:
 
 -   Each predictor variable is assumed to be independent as well, that is, there is no
     [collinearity](#ch4-collinearity) between predictors. This can be detected through
-    exploratory visualization using a scatterplot matrix or by calculating *variance
-    inflation factors* via `car::vif` or other methods.
+    exploratory visualization using a scatterplot matrix, by calculating *variance
+    inflation factors* via `car::vif`, or by other methods.
 
 -   Just as with linear regression models, the goodness-of-fit can be negatively
     impacted by [outliers](#ch3-outliers) or [high-leverage
@@ -137,20 +137,22 @@ of the *setosa* species.
 
 [^1]: Definition from [Wikipedia](https://en.wikipedia.org/wiki/Confusion_matrix).
 
-```{r}
+```{r ch5-2}
 set.seed(6047)
 
 # I'm going to start by switching around the classes on a few of the
 # observations, just to make the confusion matrix more interesting. 
 # Otherwise, our classifier will be _too_ good.
-(iris_data
+skim(
+  iris_data
   <- iris
   |> mutate(
     replace = sample(Species, n()),
     Species = if_else(runif(n(), 0, 1) > .15, Species, replace),
     setosa  = factor(Species == "setosa", levels = c("TRUE", "FALSE")),
   )
-  |> select(Species, setosa, matches("(Length|Width)$")))
+  |> select(Species, setosa, matches("(Length|Width)$"))
+)
 
 # This recipe assumes that `Species` is predicted by all other values,
 # creates interaction terms, and normalizes all the numeric predictors.
@@ -183,6 +185,7 @@ iris_predictions <- augment(iris_workflow, iris_data)
   |> count(setosa, .pred_class)
   |> pivot_wider(names_from = .pred_class, values_from = n))
 ```
+
 
 In this binary case, the results can be classified in four different ways:
 
@@ -222,12 +225,14 @@ useful measures:
 -   *F Measure* is a weighted average of the precision and recall, with best 1 and worst
     being 0.
 
--   *Cohen's Kappa* has other uses, but when determining the performance of a
-    classification model it provides an estimate of how much better the observed
-    accuracy (calculated as shown above) is than the expected accuracy. For example, if
-    the expected accuracy is 50% (random chance) and the observed accuracy is 95%,
-    $\kappa$ will be 0.90. This is especially useful when the class distribution is
-    skewed. Kappa can be calculated as shown:
+-   *Cohen's Kappa* is also used to evaluate inter-rater reliability, but if one
+    considers the observed classification to be set by one *rater* and the predicted
+    classes to be set by another *rater*, it can be usefully applied to classification
+    models. When applied in this way, $\kappa$ provides an estimate of how much better
+    the observed accuracy (calculated as shown above) is than the expected accuracy
+    (shown below). For example, if the expected accuracy is 50% (random chance) and the
+    observed accuracy is 95%, $\kappa$ will be 0.90. This is especially useful when the
+    class distribution is skewed. $\kappa$ can be calculated as shown:
 
     $$\begin{align}
     observations &= n = TP + TN + FP + FN \\
@@ -245,7 +250,7 @@ threshold can be manipulated in order to further evaluate the model fit. By plot
 *sensitivity* against [1 - *specificity*] for a range of threshold values, you get a
 *received operator characteristic* (ROC) chart:
 
-```{r}
+```{r ch5-3}
 (iris_predictions
   |> roc_curve(truth = setosa, .pred_TRUE) 
   |> autoplot())
@@ -258,7 +263,7 @@ the top. The *area under the curve* (AUC) is a value between 0 and 1 that provid
 quantitative measurement of the performance indicated by the ROC curve. The closer this
 value is to 1, the better the model has performed.
 
-```{r}
+```{r ch5-4}
 # Define a set of metrics using the `yardstick` package
 eval_metrics <- metric_set(ppv,    recall, specificity, accuracy, 
                            f_meas, kap,    roc_auc)
@@ -274,11 +279,12 @@ eval_metrics(
 
 When expanding our predictive value to predicting *all* classes of iris species:
 
-```{r echo=TRUE}
+```{r ch5-5, echo=TRUE}
 # This recipe assumes that `Species` is predicted by all other values,
 # creates interaction terms, and normalizes all the numeric predictors.
 (iris_recipe
   <- recipe(Species ~ ., data = iris_data)
+  |> step_rm(setosa) # No cheating!
   |> step_interact(Species ~ Sepal.Length:Sepal.Width)
   |> step_interact(Species ~ Petal.Length:Petal.Width)
   |> step_normalize(all_numeric_predictors()))
@@ -306,14 +312,13 @@ iris_predictions <- augment(iris_workflow, iris_data)
   |> pivot_wider(names_from = .pred_class, values_from = n))
 ```
 
-Here we see that our relatively "un-tuned" model does a good job of identifying *setosa*
-species but struggles a bit more with *versicolor* and *virginica* (due in large part to
-our 'tweaks' to the data set). Each row represents the true class of the flower while
-each column represents the predicted class of each flower. In a perfect world, we would
-only have numbers on the diagonal. We can examine the same metrics as we did in the
-binomial case:
+Here we see that our relatively "un-tuned" model does a good job of identifying iris
+species with just a few mis-classifications (due in large part to our 'tweaks' to the
+data set). Each row represents the true class of the flower while each column represents
+the predicted class of each flower. In a perfect world, we would only have numbers on
+the diagonal. We can examine the same metrics as we did in the binomial case:
 
-```{r}
+```{r ch5-6}
 eval_metrics <- metric_set(ppv,    recall, specificity, accuracy, 
                            f_meas, kap,    roc_auc)
 eval_metrics(
@@ -328,4 +333,242 @@ eval_metrics(
 
 ## Example {#ch5-example}
 
-*This section is currently under construction*
+### Dataset
+
+For our example logistic regression, let's attempt to classify diamonds by expected
+'price class' using the `diamonds` dataset.
+
+::: {.sourceCode .r style="padding:1em;"}
+```{r ch5-7, echo=FALSE}
+helpfile <- utils:::.getHelpFile(help(diamonds))
+outfile <- tempfile(fileext = ".html")
+tools:::Rd2HTML(helpfile, out =outfile)
+rawHTML <- paste(readLines(outfile), collapse="\n")
+knitr::asis_output(htmltools::htmlPreserve(rawHTML))
+```
+:::
+
+```{r ch5-8}
+skim(diamonds)
+```
+
+### Response Categories
+
+Because I know I want to predict a 'price class' as a category instead of as continuous
+value, I should try to determine how large the range of prices in each category should
+be. Ideally, each price category should contain a comparable number of observations.
+You'd also want to consider the business use case here, but since this is an example of
+logistic regression modeling more than a primer on the diamond trade, let's stick to
+making roughly equal size groups. Let's take a look a the distribution of `price`.
+
+```{r ch5-9}
+ggplot(diamonds, aes(price)) +
+  geom_histogram(bins = 50) +
+  theme_minimal()
+```
+
+Oh, well, that's troublesome. Looks like we'll need to log-transform `price` if we want
+it to be evenly distributed across the range.
+
+```{r ch5-10}
+ggplot(diamonds, aes(log(price))) +
+  geom_histogram(bins = 50) +
+  theme_minimal()
+```
+
+That's *much* better. Now, let's identify the optimal interval size:
+
+```{r ch5-11}
+(tibble(buckets = seq_len(10))
+  |> mutate(.calc = map(buckets, ~ (
+    diamonds
+    |> mutate(bucket = cut_interval(log(price), .x))
+    |> count(bucket)
+    |> summarise(
+      mean_obs = mean(n), 
+      sd_obs   = sd(n),
+      min_obs  = min(n),
+      max_obs  = max(n),
+      range    = max_obs - min_obs,
+    )
+  )))
+  |> unnest(.calc))
+```
+
+It looks like 5 groups provides a good balance between the class sizes and the number of
+classes.
+
+### Correlations
+
+Let's start by establishing the correlations amongst the numeric variables in this
+dataset:
+
+```{r ch5-12, cache=TRUE}
+# Use a scatterplot matrix to identify correlations
+columns <- c("price", "carat", "depth", "table", "x", "y", "z")
+GGally::ggpairs(diamonds, columns = columns, progress = F)
+```
+
+We can make a few observations here:
+
+-   The various size parameters: `carat`, `x`, `y`, and `z` are all highly correlated,
+    as may be expected.
+
+-   The shape of the distribution for `carat` indicates that it may be best used when
+    log-transformed (a left-biased distribution with a long tail).
+
+-   `price` is very highly correlated with `carat`, as might be expected from a layman's
+    understanding of how diamonds are priced. Bigger is better!
+
+There are a few categorical variables as well that we should examine:
+
+```{r ch5-13}
+ggplot(diamonds, aes(price, carat, color = cut)) +
+  geom_point(alpha = 0.5) +
+  theme_minimal()
+```
+
+```{r ch5-14}
+ggplot(diamonds, aes(price, carat, color = color)) +
+  geom_point(alpha = 0.5) +
+  theme_minimal()
+```
+
+```{r ch5-15}
+ggplot(diamonds, aes(price, carat, color = clarity)) +
+  geom_point(alpha = 0.5) +
+  theme_minimal()
+```
+
+There appears to be *some* variation in `price`/`carat` based on these categorical
+values, but it's not extremely pronounced. The patterns are perhaps more easily
+observable on the correlogram.
+
+```{r ch5-16, cache=TRUE}
+columns <- c("price", "cut", "color", "clarity")
+GGally::ggpairs(diamonds, columns = columns, progress = F)
+```
+
+There appears to be *some* correlation between `color`, `cut`, and `clarity`, with the
+most pronounced between `color` and `cut`. If we knew more about the diamond pricing
+market, we might infer that certain cuts are preferred for certain colors of diamond,
+but that's just conjecture at this point. We'll choose to add an interaction term for
+`color:cut`, but there's probably room for more experimentation on this point.
+
+### High Leverage Points
+
+Recall, that *high-leverage points* are those observations where the observed values
+fall well outside the range of the majority of the observed values. Since we only have
+one continuous predictor variable (`carat`), any high-leverage points should be pretty
+easy to find. (Note, recall that above we indicated a that we should log-transform
+`carat` due to its distribution, so we should do that here as well).
+
+```{r ch5-17}
+ggplot(diamonds, aes(factor(1), log(carat))) +
+  geom_boxplot() +
+  theme_minimal()
+```
+
+Looks like there are two values for `carat` that fall way outside the range of the
+majority of the values. Let's find them:
+
+```{r ch5-18}
+(diamonds
+  |> arrange(desc(carat))
+  |> head(2)
+  |> pull(carat)
+  |> log()
+  |> round(2))
+```
+
+Just for fun, let's check the normal range for `carat`:
+
+```{r ch5-19}
+mean_carat <- mean(log(diamonds$carat)) |> round(2)
+sd_carat   <- sd(log(diamonds$carat)) |> round(2)
+paste(mean_carat, "+/-", sd_carat)
+```
+
+Those values are more than 3 standard deviations away from the mean of *log* `carat`. To
+be on the safe side, let's exclude any observations where `log(carat)` lies 3 or more
+standard deviations from the mean.
+
+### Fit and Check
+
+From exploring the dataset, I've decided to:
+
+-   Log-transform `price` then add each transformed price to one of 5 classes, depending
+    on its value.
+
+-   Use `carat`, `cut`, `clarity`, and `color` as predictor variables.
+
+-   Log-transform `carat` prior to training the model.
+
+-   Remove observations where `log(carat)` is 3 or more standard deviations away from
+    the mean as high-leverage observations.
+
+-   Add an interaction parameter for `color:cut`.
+
+```{r ch5-20}
+set.seed(800633)
+
+# Modification to response variables should not be part of the workflow
+mod_diamonds <- mutate(diamonds, price_cat = cut_interval(log(price), 5))
+
+mod_diamonds_split <- initial_split(mod_diamonds)
+
+# Specify the recipe, using the preparation steps described above
+(log_reg_recipe
+  <- recipe(price_cat ~ carat + cut + color + clarity,
+            data = mod_diamonds)
+  |> step_log(carat)
+  |> step_filter(abs(carat - mean(carat)) < (sd(carat) * 3))
+  |> step_dummy(all_nominal_predictors())
+  |> step_interact(price_cat ~ starts_with("color_"):starts_with("cut_")))
+
+# Setup the model
+(log_reg_model
+  <- multinom_reg()
+  |> set_engine("nnet")
+  |> set_mode("classification"))
+
+# Bundle the recipe and model into a workflow, fit the model
+(log_reg_workflow
+  <- workflow()
+  |> add_recipe(log_reg_recipe)
+  |> add_model(log_reg_model)
+  |> fit(data = training(mod_diamonds_split)))
+
+# Add predictions to training data
+log_reg_predictions <- augment(log_reg_workflow, testing(mod_diamonds_split))
+
+# Check performance using the same set of metrics as we did previously
+eval_metrics <- metric_set(
+  ppv,      recall, specificity, 
+  accuracy, f_meas, kap,    
+  roc_auc
+)
+eval_metrics(
+  data = log_reg_predictions, 
+  truth = price_cat, 
+  estimate = .pred_class, 
+  `.pred_[5.79,6.6]`,
+  `.pred_(6.6,7.41]`,
+  `.pred_(7.41,8.22]`,
+  `.pred_(8.22,9.03]`,
+  `.pred_(9.03,9.84]`
+)
+```
+
+The metrics look pretty good, let's take a look at the confusion matrix...
+
+```{r ch5-21}
+(log_reg_predictions
+  |> count(price_cat, .pred_class)
+  |> pivot_wider(names_from = .pred_class, values_from = n))
+```
+
+All told, our classifier seems to be working OK. Most of the time, we're correctly
+predicted the price category for each observation in the testing set, and when we
+mis-classify the price category we are (with one single exception) picking the price
+category above or below the true category.

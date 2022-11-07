@@ -35,7 +35,7 @@ and $\beta_1$ can be estimated via
 $$\hat\beta_1 = \frac{\sum_{i=1}^n(x_i - \bar{x})(y_i-\bar{y})}{\sum_{i=1}^n(x_i-\bar{x})^2}$$
 $$\hat\beta_0 = \bar{y} - \hat\beta_1\bar{x}$$ In code, this looks like:
 
-```{r}
+```{r ch3-1}
 x <- mtcars$hp  # horsepower
 y <- mtcars$mpg # fuel efficiency, in miles/gallon
 
@@ -79,7 +79,7 @@ $$\widehat{SE}(\hat\beta_1)^2 = \frac{\sigma^2}{\sum_{i=1}^n{(x_i - \bar{x})^2}}
 
 In code, that looks like:
 
-```{r}
+```{r ch3-2}
 predicted  <- (slope * x) + intercept
 residuals  <- predicted - y
 rss        <- sum(residuals^2)               # residual sum of squares
@@ -94,7 +94,7 @@ $$\hat\beta_1 \pm 2 \times SE(\hat\beta_1)$$
 
 From the above example, it looks like this in code:
 
-```{r}
+```{r ch3-3}
 min_interval  <- slope - (2 * se_slope)
 max_interval  <- slope + (2 * se_slope)
 (conf_interval <- c(min_interval, max_interval))
@@ -131,7 +131,7 @@ we'll see in the `tidymodels` example for this modeling approach.
     the observed relationship between predictor(s) and response(s) could be observed as
     the result of random chance.
 
-```{r}
+```{r ch3-4}
 (t_statistic <- (slope - 0)/se_slope)
 ```
 
@@ -187,7 +187,7 @@ Now, with an understanding of the underlying math and relevant statistics, we ca
 simple linear model to the example dataset we've used thus far, that is: estimating the
 fuel efficiency of a vehicle from its horsepower rating.
 
-```{r}
+```{r ch3-5}
 # In this example, we'll forgo the training/testing split to
 # be consistent with our calculated model above.
 
@@ -222,7 +222,7 @@ the `hp` term, which is the only predictor variable) and the intercept are both 
 small, indicating that a simple linear model is valid for making predictions on this
 data set. But, how good is the fit?
 
-```{r}
+```{r ch3-6}
 # Evaluate fit
 metrics(simple_linear_predictions, mpg, .pred)
 ```
