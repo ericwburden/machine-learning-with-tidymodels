@@ -65,7 +65,7 @@ the relationship. The *p-value* can be calculated from $F$ for a given *n* and *
 well as for each predictor variable. These values are reported by the base R `lm` model,
 which can handle multiple linear regression. The code looks like:
 
-``` {#ch4-1 .r}
+```{r ch4-1}
 set.seed(1337)
 x1  <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 x2  <- c(1, 3, 5, 7, 11, 13, 17, 23, 29, 31)
@@ -99,7 +99,7 @@ the slope for `x2` is smaller. The overall `p-value` is also quite small and $F$
 quite large, indicating that the response and predictors do have a relationship. Compare
 that to:
 
-``` {#ch4-2 .r}
+```{r ch4-2}
 y   <- runif(10, 0, 40) # random values
 fit <- lm(y ~ x1 + x2)
 summary(fit)
@@ -171,7 +171,7 @@ We can add *exploratory data analysis* steps to suss out any complicating issues
 
 ### Correlated Predictors {#ch-correlated-predictors}
 
-``` {#ch4-3 .r}
+```{r ch4-3}
 # Use a scatterplot matrix to identify correlations
 GGally::ggpairs(mtcars, columns = c("disp", "hp", "drat", "wt", "qsec"), progress = F)
 ```
@@ -187,7 +187,7 @@ shown below.
 
 ### Tidymodels Workflow {#ch4-tidymodels-workflow}
 
-``` {#ch4-4 .r}
+```{r ch4-4}
 set.seed(1234)
 
 # Note, we're still not splitting the dataset here, for the sake of

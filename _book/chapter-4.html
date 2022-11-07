@@ -315,52 +315,88 @@ which can handle multiple linear regression. The code looks like:</p>
 <span id="cb31-4"><a href="chapter-4.html#cb31-4" aria-hidden="true" tabindex="-1"></a>y   <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">2</span><span class="sc">*</span>x1 <span class="sc">+</span> <span class="fl">0.33</span><span class="sc">*</span>x2 <span class="sc">+</span> <span class="fu">runif</span>(<span class="dv">10</span>, <span class="sc">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>)</span>
 <span id="cb31-5"><a href="chapter-4.html#cb31-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2)</span>
 <span id="cb31-6"><a href="chapter-4.html#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-7"><a href="chapter-4.html#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span>
-<span id="cb31-8"><a href="chapter-4.html#cb31-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-9"><a href="chapter-4.html#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
-<span id="cb31-10"><a href="chapter-4.html#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lm(formula = y ~ x1 + x2)</span></span>
-<span id="cb31-11"><a href="chapter-4.html#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb31-12"><a href="chapter-4.html#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Residuals:</span></span>
-<span id="cb31-13"><a href="chapter-4.html#cb31-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      Min       1Q   Median       3Q      Max</span></span>
-<span id="cb31-14"><a href="chapter-4.html#cb31-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -0.39015 -0.10268 -0.04461  0.09799  0.51006</span></span>
-<span id="cb31-15"><a href="chapter-4.html#cb31-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;</span></span>
-<span id="cb31-16"><a href="chapter-4.html#cb31-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
-<span id="cb31-17"><a href="chapter-4.html#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)</span></span>
-<span id="cb31-18"><a href="chapter-4.html#cb31-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)  4.85564    0.29322  16.560 7.15e-07 ***</span></span>
-<span id="cb31-19"><a href="chapter-4.html#cb31-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x1           2.08968    0.15838  13.194 3.36e-06 ***</span></span>
-<span id="cb31-20"><a href="chapter-4.html#cb31-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x2           0.29789    0.04474   6.659 0.000288 ***</span></span>
-<span id="cb31-21"><a href="chapter-4.html#cb31-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
-<span id="cb31-22"><a href="chapter-4.html#cb31-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span></span>
-<span id="cb31-23"><a href="chapter-4.html#cb31-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;</span></span>
-<span id="cb31-24"><a href="chapter-4.html#cb31-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Residual standard error: 0.2669 on 7 degrees of freedom</span></span>
-<span id="cb31-25"><a href="chapter-4.html#cb31-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Multiple R-squared:  0.9994,    Adjusted R-squared:  0.9992</span></span>
-<span id="cb31-26"><a href="chapter-4.html#cb31-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F-statistic:  5681 on 2 and 7 DF,  p-value: 5.79e-12</span></span></code></pre></div>
+<span id="cb31-7"><a href="chapter-4.html#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x1 + x2)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.39015 -0.10268 -0.04461  0.09799  0.51006 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  4.85564    0.29322  16.560 7.15e-07 ***
+## x1           2.08968    0.15838  13.194 3.36e-06 ***
+## x2           0.29789    0.04474   6.659 0.000288 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2669 on 7 degrees of freedom
+## Multiple R-squared:  0.9994, Adjusted R-squared:  0.9992 
+## F-statistic:  5681 on 2 and 7 DF,  p-value: 5.79e-12</code></pre>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="chapter-4.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb33-2"><a href="chapter-4.html#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lm(formula = y ~ x1 + x2)</span></span>
+<span id="cb33-3"><a href="chapter-4.html#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb33-4"><a href="chapter-4.html#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Residuals:</span></span>
+<span id="cb33-5"><a href="chapter-4.html#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      Min       1Q   Median       3Q      Max</span></span>
+<span id="cb33-6"><a href="chapter-4.html#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -0.39015 -0.10268 -0.04461  0.09799  0.51006</span></span>
+<span id="cb33-7"><a href="chapter-4.html#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb33-8"><a href="chapter-4.html#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb33-9"><a href="chapter-4.html#cb33-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)</span></span>
+<span id="cb33-10"><a href="chapter-4.html#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)  4.85564    0.29322  16.560 7.15e-07 ***</span></span>
+<span id="cb33-11"><a href="chapter-4.html#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x1           2.08968    0.15838  13.194 3.36e-06 ***</span></span>
+<span id="cb33-12"><a href="chapter-4.html#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x2           0.29789    0.04474   6.659 0.000288 ***</span></span>
+<span id="cb33-13"><a href="chapter-4.html#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb33-14"><a href="chapter-4.html#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span></span>
+<span id="cb33-15"><a href="chapter-4.html#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb33-16"><a href="chapter-4.html#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Residual standard error: 0.2669 on 7 degrees of freedom</span></span>
+<span id="cb33-17"><a href="chapter-4.html#cb33-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Multiple R-squared:  0.9994,    Adjusted R-squared:  0.9992</span></span>
+<span id="cb33-18"><a href="chapter-4.html#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F-statistic:  5681 on 2 and 7 DF,  p-value: 5.79e-12</span></span></code></pre></div>
 <p>Here we see a larger <em>p-value</em> for <code>x1</code> compared to <code>x2</code>, which makes sense given that
 the slope for <code>x2</code> is smaller. The overall <code>p-value</code> is also quite small and <span class="math inline">\(F\)</span> is
 quite large, indicating that the response and predictors do have a relationship. Compare
 that to:</p>
-<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="chapter-4.html#cb32-1" aria-hidden="true" tabindex="-1"></a>y   <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">40</span>) <span class="co"># random values</span></span>
-<span id="cb32-2"><a href="chapter-4.html#cb32-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2)</span>
-<span id="cb32-3"><a href="chapter-4.html#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span>
-<span id="cb32-4"><a href="chapter-4.html#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-5"><a href="chapter-4.html#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
-<span id="cb32-6"><a href="chapter-4.html#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lm(formula = y ~ x1 + x2)</span></span>
-<span id="cb32-7"><a href="chapter-4.html#cb32-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;</span></span>
-<span id="cb32-8"><a href="chapter-4.html#cb32-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Residuals:</span></span>
-<span id="cb32-9"><a href="chapter-4.html#cb32-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      Min       1Q   Median       3Q      Max</span></span>
-<span id="cb32-10"><a href="chapter-4.html#cb32-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -19.8573  -8.3492   0.6098  11.5581  19.5387</span></span>
-<span id="cb32-11"><a href="chapter-4.html#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;</span></span>
-<span id="cb32-12"><a href="chapter-4.html#cb32-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
-<span id="cb32-13"><a href="chapter-4.html#cb32-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)</span></span>
-<span id="cb32-14"><a href="chapter-4.html#cb32-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)   45.729     17.386   2.630   0.0339 *</span></span>
-<span id="cb32-15"><a href="chapter-4.html#cb32-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x1            -7.257      9.391  -0.773   0.4649</span></span>
-<span id="cb32-16"><a href="chapter-4.html#cb32-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x2             1.437      2.653   0.542   0.6048</span></span>
-<span id="cb32-17"><a href="chapter-4.html#cb32-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
-<span id="cb32-18"><a href="chapter-4.html#cb32-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span></span>
-<span id="cb32-19"><a href="chapter-4.html#cb32-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
-<span id="cb32-20"><a href="chapter-4.html#cb32-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Residual standard error: 15.82 on 7 degrees of freedom</span></span>
-<span id="cb32-21"><a href="chapter-4.html#cb32-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Multiple R-squared:   0.22,     Adjusted R-squared:  -0.002895</span></span>
-<span id="cb32-22"><a href="chapter-4.html#cb32-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F-statistic: 0.987 on 2 and 7 DF,  p-value: 0.4192</span></span></code></pre></div>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="chapter-4.html#cb34-1" aria-hidden="true" tabindex="-1"></a>y   <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">40</span>) <span class="co"># random values</span></span>
+<span id="cb34-2"><a href="chapter-4.html#cb34-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2)</span>
+<span id="cb34-3"><a href="chapter-4.html#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div>
+<pre><code>## 
+## Call:
+## lm(formula = y ~ x1 + x2)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -19.8573  -8.3492   0.6098  11.5581  19.5387 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)  
+## (Intercept)   45.729     17.386   2.630   0.0339 *
+## x1            -7.257      9.391  -0.773   0.4649  
+## x2             1.437      2.653   0.542   0.6048  
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 15.82 on 7 degrees of freedom
+## Multiple R-squared:   0.22,  Adjusted R-squared:  -0.002895 
+## F-statistic: 0.987 on 2 and 7 DF,  p-value: 0.4192</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="chapter-4.html#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Call:</span></span>
+<span id="cb36-2"><a href="chapter-4.html#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; lm(formula = y ~ x1 + x2)</span></span>
+<span id="cb36-3"><a href="chapter-4.html#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb36-4"><a href="chapter-4.html#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Residuals:</span></span>
+<span id="cb36-5"><a href="chapter-4.html#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      Min       1Q   Median       3Q      Max</span></span>
+<span id="cb36-6"><a href="chapter-4.html#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -19.8573  -8.3492   0.6098  11.5581  19.5387</span></span>
+<span id="cb36-7"><a href="chapter-4.html#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;</span></span>
+<span id="cb36-8"><a href="chapter-4.html#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Coefficients:</span></span>
+<span id="cb36-9"><a href="chapter-4.html#cb36-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             Estimate Std. Error t value Pr(&gt;|t|)</span></span>
+<span id="cb36-10"><a href="chapter-4.html#cb36-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; (Intercept)   45.729     17.386   2.630   0.0339 *</span></span>
+<span id="cb36-11"><a href="chapter-4.html#cb36-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x1            -7.257      9.391  -0.773   0.4649</span></span>
+<span id="cb36-12"><a href="chapter-4.html#cb36-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; x2             1.437      2.653   0.542   0.6048</span></span>
+<span id="cb36-13"><a href="chapter-4.html#cb36-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ---</span></span>
+<span id="cb36-14"><a href="chapter-4.html#cb36-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span></span>
+<span id="cb36-15"><a href="chapter-4.html#cb36-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb36-16"><a href="chapter-4.html#cb36-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Residual standard error: 15.82 on 7 degrees of freedom</span></span>
+<span id="cb36-17"><a href="chapter-4.html#cb36-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Multiple R-squared:   0.22,     Adjusted R-squared:  -0.002895</span></span>
+<span id="cb36-18"><a href="chapter-4.html#cb36-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; F-statistic: 0.987 on 2 and 7 DF,  p-value: 0.4192</span></span></code></pre></div>
 <p>Here, the overall <em>p-value</em> is rather large, and <span class="math inline">\(F\)</span> is very nearly 1, indicating (as we
 suspect) that <code>y</code> cannot be predicted by <code>x1</code> and <code>x2</code>.</p>
 </div>
@@ -407,9 +443,9 @@ We can add <em>exploratory data analysis</em> steps to suss out any complicating
 (discussed in <a href="chapter-4.html#ch4-considerations">Considerations</a>).</p>
 <div id="ch-correlated-predictors" class="section level3 hasAnchor" number="4.6.1">
 <h3><span class="header-section-number">4.6.1</span> Correlated Predictors<a href="chapter-4.html#ch-correlated-predictors" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="chapter-4.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a scatterplot matrix to identify correlations</span></span>
-<span id="cb33-2"><a href="chapter-4.html#cb33-2" aria-hidden="true" tabindex="-1"></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(mtcars, <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;disp&quot;</span>, <span class="st">&quot;hp&quot;</span>, <span class="st">&quot;drat&quot;</span>, <span class="st">&quot;wt&quot;</span>, <span class="st">&quot;qsec&quot;</span>), <span class="at">progress =</span> F)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="chapter-4.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a scatterplot matrix to identify correlations</span></span>
+<span id="cb37-2"><a href="chapter-4.html#cb37-2" aria-hidden="true" tabindex="-1"></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(mtcars, <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;disp&quot;</span>, <span class="st">&quot;hp&quot;</span>, <span class="st">&quot;drat&quot;</span>, <span class="st">&quot;wt&quot;</span>, <span class="st">&quot;qsec&quot;</span>), <span class="at">progress =</span> F)</span></code></pre></div>
+<p><img src="_main_files/figure-html/ch4-3-1.png" width="672" /></p>
 <p>In this <em>scatterplot matrix</em>, the bottom half of the plot shows scatterplots for each
 row/column combination, the top half includes the raw correlations and their
 significance (more asterisks == more correlation), and the central diagonal indicates a
@@ -421,26 +457,26 @@ shown below.</p>
 </div>
 <div id="ch4-tidymodels-workflow" class="section level3 hasAnchor" number="4.6.2">
 <h3><span class="header-section-number">4.6.2</span> Tidymodels Workflow<a href="chapter-4.html#ch4-tidymodels-workflow" class="anchor-section" aria-label="Anchor link to header"></a></h3>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="chapter-4.html#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
-<span id="cb34-2"><a href="chapter-4.html#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-3"><a href="chapter-4.html#cb34-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Note, we&#39;re still not splitting the dataset here, for the sake of</span></span>
-<span id="cb34-4"><a href="chapter-4.html#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># comparison to the Simple Linear Regression example.</span></span>
-<span id="cb34-5"><a href="chapter-4.html#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-6"><a href="chapter-4.html#cb34-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Pre-process the data using a recipe</span></span>
-<span id="cb34-7"><a href="chapter-4.html#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Note, this is slightly different than the example from Chapter 2,</span></span>
-<span id="cb34-8"><a href="chapter-4.html#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="co"># here we add interaction terms for the many interactions observed.</span></span>
-<span id="cb34-9"><a href="chapter-4.html#cb34-9" aria-hidden="true" tabindex="-1"></a>(multiple_linear_regression_recipe</span>
-<span id="cb34-10"><a href="chapter-4.html#cb34-10" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">recipe</span>(mpg <span class="sc">~</span> disp <span class="sc">+</span> hp <span class="sc">+</span> drat <span class="sc">+</span> wt <span class="sc">+</span> qsec, </span>
-<span id="cb34-11"><a href="chapter-4.html#cb34-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> mtcars)</span>
-<span id="cb34-12"><a href="chapter-4.html#cb34-12" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_log</span>(disp, hp)</span>
-<span id="cb34-13"><a href="chapter-4.html#cb34-13" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_interact</span>(</span>
-<span id="cb34-14"><a href="chapter-4.html#cb34-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">terms =</span> <span class="sc">~</span> disp<span class="sc">:</span>hp <span class="sc">+</span> </span>
-<span id="cb34-15"><a href="chapter-4.html#cb34-15" aria-hidden="true" tabindex="-1"></a>              disp<span class="sc">:</span>drat <span class="sc">+</span> </span>
-<span id="cb34-16"><a href="chapter-4.html#cb34-16" aria-hidden="true" tabindex="-1"></a>              disp<span class="sc">:</span>wt <span class="sc">+</span> </span>
-<span id="cb34-17"><a href="chapter-4.html#cb34-17" aria-hidden="true" tabindex="-1"></a>              hp<span class="sc">:</span>wt <span class="sc">+</span> </span>
-<span id="cb34-18"><a href="chapter-4.html#cb34-18" aria-hidden="true" tabindex="-1"></a>              hp<span class="sc">:</span>qsec <span class="sc">+</span> </span>
-<span id="cb34-19"><a href="chapter-4.html#cb34-19" aria-hidden="true" tabindex="-1"></a>              drat<span class="sc">:</span>wt)</span>
-<span id="cb34-20"><a href="chapter-4.html#cb34-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="chapter-4.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb38-2"><a href="chapter-4.html#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="chapter-4.html#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Note, we&#39;re still not splitting the dataset here, for the sake of</span></span>
+<span id="cb38-4"><a href="chapter-4.html#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="co"># comparison to the Simple Linear Regression example.</span></span>
+<span id="cb38-5"><a href="chapter-4.html#cb38-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-6"><a href="chapter-4.html#cb38-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Pre-process the data using a recipe</span></span>
+<span id="cb38-7"><a href="chapter-4.html#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Note, this is slightly different than the example from Chapter 2,</span></span>
+<span id="cb38-8"><a href="chapter-4.html#cb38-8" aria-hidden="true" tabindex="-1"></a><span class="co"># here we add interaction terms for the many interactions observed.</span></span>
+<span id="cb38-9"><a href="chapter-4.html#cb38-9" aria-hidden="true" tabindex="-1"></a>(multiple_linear_regression_recipe</span>
+<span id="cb38-10"><a href="chapter-4.html#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">recipe</span>(mpg <span class="sc">~</span> disp <span class="sc">+</span> hp <span class="sc">+</span> drat <span class="sc">+</span> wt <span class="sc">+</span> qsec, </span>
+<span id="cb38-11"><a href="chapter-4.html#cb38-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> mtcars)</span>
+<span id="cb38-12"><a href="chapter-4.html#cb38-12" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_log</span>(disp, hp)</span>
+<span id="cb38-13"><a href="chapter-4.html#cb38-13" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">step_interact</span>(</span>
+<span id="cb38-14"><a href="chapter-4.html#cb38-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">terms =</span> <span class="sc">~</span> disp<span class="sc">:</span>hp <span class="sc">+</span> </span>
+<span id="cb38-15"><a href="chapter-4.html#cb38-15" aria-hidden="true" tabindex="-1"></a>              disp<span class="sc">:</span>drat <span class="sc">+</span> </span>
+<span id="cb38-16"><a href="chapter-4.html#cb38-16" aria-hidden="true" tabindex="-1"></a>              disp<span class="sc">:</span>wt <span class="sc">+</span> </span>
+<span id="cb38-17"><a href="chapter-4.html#cb38-17" aria-hidden="true" tabindex="-1"></a>              hp<span class="sc">:</span>wt <span class="sc">+</span> </span>
+<span id="cb38-18"><a href="chapter-4.html#cb38-18" aria-hidden="true" tabindex="-1"></a>              hp<span class="sc">:</span>qsec <span class="sc">+</span> </span>
+<span id="cb38-19"><a href="chapter-4.html#cb38-19" aria-hidden="true" tabindex="-1"></a>              drat<span class="sc">:</span>wt)</span>
+<span id="cb38-20"><a href="chapter-4.html#cb38-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div>
 <pre><code>## Recipe
 ## 
 ## Inputs:
@@ -453,20 +489,20 @@ shown below.</p>
 ## 
 ## Log transformation on disp, hp
 ## Interactions with disp:hp + disp:drat + disp:wt + hp:wt + hp:qsec + drat:wt</code></pre>
-<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="chapter-4.html#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup up the model</span></span>
-<span id="cb36-2"><a href="chapter-4.html#cb36-2" aria-hidden="true" tabindex="-1"></a>(multiple_linear_regression_model</span>
-<span id="cb36-3"><a href="chapter-4.html#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>()</span>
-<span id="cb36-4"><a href="chapter-4.html#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">&quot;lm&quot;</span>)</span>
-<span id="cb36-5"><a href="chapter-4.html#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_mode</span>(<span class="st">&quot;regression&quot;</span>))</span></code></pre></div>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="chapter-4.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup up the model</span></span>
+<span id="cb40-2"><a href="chapter-4.html#cb40-2" aria-hidden="true" tabindex="-1"></a>(multiple_linear_regression_model</span>
+<span id="cb40-3"><a href="chapter-4.html#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">linear_reg</span>()</span>
+<span id="cb40-4"><a href="chapter-4.html#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_engine</span>(<span class="st">&quot;lm&quot;</span>)</span>
+<span id="cb40-5"><a href="chapter-4.html#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">set_mode</span>(<span class="st">&quot;regression&quot;</span>))</span></code></pre></div>
 <pre><code>## Linear Regression Model Specification (regression)
 ## 
 ## Computational engine: lm</code></pre>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="chapter-4.html#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bundle the recipe and model into a workflow, fit the model</span></span>
-<span id="cb38-2"><a href="chapter-4.html#cb38-2" aria-hidden="true" tabindex="-1"></a>(multiple_linear_regression_workflow</span>
-<span id="cb38-3"><a href="chapter-4.html#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">workflow</span>()</span>
-<span id="cb38-4"><a href="chapter-4.html#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(multiple_linear_regression_recipe)</span>
-<span id="cb38-5"><a href="chapter-4.html#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(multiple_linear_regression_model)</span>
-<span id="cb38-6"><a href="chapter-4.html#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> <span class="fu">training</span>(mtcars_split)))</span></code></pre></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="chapter-4.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bundle the recipe and model into a workflow, fit the model</span></span>
+<span id="cb42-2"><a href="chapter-4.html#cb42-2" aria-hidden="true" tabindex="-1"></a>(multiple_linear_regression_workflow</span>
+<span id="cb42-3"><a href="chapter-4.html#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="ot">&lt;-</span> <span class="fu">workflow</span>()</span>
+<span id="cb42-4"><a href="chapter-4.html#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(multiple_linear_regression_recipe)</span>
+<span id="cb42-5"><a href="chapter-4.html#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(multiple_linear_regression_model)</span>
+<span id="cb42-6"><a href="chapter-4.html#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> <span class="fu">training</span>(mtcars_split)))</span></code></pre></div>
 <pre><code>## ══ Workflow [trained] ═══════════════════════════════════════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: linear_reg()
@@ -484,32 +520,32 @@ shown below.</p>
 ## 
 ## Coefficients:
 ## (Intercept)         disp           hp         drat           wt         qsec    disp_x_hp  
-##      9.8223      -5.0773       9.2242      21.5371     -26.5927       1.5736       1.9581  
+##   -236.5571      55.1520      48.2756       8.2504     -42.3966       6.4931      -9.3410  
 ## disp_x_drat    disp_x_wt      hp_x_wt    hp_x_qsec    drat_x_wt  
-##     -6.8414       6.9204      -6.4707      -0.2865       5.1099</code></pre>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="chapter-4.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to training data</span></span>
-<span id="cb40-2"><a href="chapter-4.html#cb40-2" aria-hidden="true" tabindex="-1"></a>multiple_linear_regression_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(</span>
-<span id="cb40-3"><a href="chapter-4.html#cb40-3" aria-hidden="true" tabindex="-1"></a>  multiple_linear_regression_workflow, </span>
-<span id="cb40-4"><a href="chapter-4.html#cb40-4" aria-hidden="true" tabindex="-1"></a>  mtcars</span>
-<span id="cb40-5"><a href="chapter-4.html#cb40-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb40-6"><a href="chapter-4.html#cb40-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb40-7"><a href="chapter-4.html#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Check performance</span></span>
-<span id="cb40-8"><a href="chapter-4.html#cb40-8" aria-hidden="true" tabindex="-1"></a>(<span class="fu">metrics</span>(multiple_linear_regression_predictions, mpg, .pred))</span></code></pre></div>
+##     -2.5230       0.7156       5.6372      -1.3753       2.3645</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="chapter-4.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to training data</span></span>
+<span id="cb44-2"><a href="chapter-4.html#cb44-2" aria-hidden="true" tabindex="-1"></a>multiple_linear_regression_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(</span>
+<span id="cb44-3"><a href="chapter-4.html#cb44-3" aria-hidden="true" tabindex="-1"></a>  multiple_linear_regression_workflow, </span>
+<span id="cb44-4"><a href="chapter-4.html#cb44-4" aria-hidden="true" tabindex="-1"></a>  mtcars</span>
+<span id="cb44-5"><a href="chapter-4.html#cb44-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb44-6"><a href="chapter-4.html#cb44-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-7"><a href="chapter-4.html#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Check performance</span></span>
+<span id="cb44-8"><a href="chapter-4.html#cb44-8" aria-hidden="true" tabindex="-1"></a>(<span class="fu">metrics</span>(multiple_linear_regression_predictions, mpg, .pred))</span></code></pre></div>
 <pre><code>## # A tibble: 3 × 3
 ##   .metric .estimator .estimate
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-## 1 rmse    standard       1.91 
-## 2 rsq     standard       0.899
-## 3 mae     standard       1.54</code></pre>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="chapter-4.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># It is often helpful to visualze results like this, comparing the </span></span>
-<span id="cb42-2"><a href="chapter-4.html#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># actual values to the predicted values of the response variable.</span></span>
-<span id="cb42-3"><a href="chapter-4.html#cb42-3" aria-hidden="true" tabindex="-1"></a>(multiple_linear_regression_predictions</span>
-<span id="cb42-4"><a href="chapter-4.html#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> .pred, <span class="at">y =</span> mpg))</span>
-<span id="cb42-5"><a href="chapter-4.html#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)</span>
-<span id="cb42-6"><a href="chapter-4.html#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;orange&quot;</span>)</span>
-<span id="cb42-7"><a href="chapter-4.html#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Multiple Linear Regression&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Predicted&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Actual&quot;</span>)</span>
-<span id="cb42-8"><a href="chapter-4.html#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">theme_minimal</span>())</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+## 1 rmse    standard       2.44 
+## 2 rsq     standard       0.860
+## 3 mae     standard       1.64</code></pre>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="chapter-4.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># It is often helpful to visualze results like this, comparing the </span></span>
+<span id="cb46-2"><a href="chapter-4.html#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="co"># actual values to the predicted values of the response variable.</span></span>
+<span id="cb46-3"><a href="chapter-4.html#cb46-3" aria-hidden="true" tabindex="-1"></a>(multiple_linear_regression_predictions</span>
+<span id="cb46-4"><a href="chapter-4.html#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> .pred, <span class="at">y =</span> mpg))</span>
+<span id="cb46-5"><a href="chapter-4.html#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">&quot;blue&quot;</span>)</span>
+<span id="cb46-6"><a href="chapter-4.html#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;orange&quot;</span>)</span>
+<span id="cb46-7"><a href="chapter-4.html#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Multiple Linear Regression&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Predicted&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Actual&quot;</span>)</span>
+<span id="cb46-8"><a href="chapter-4.html#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">theme_minimal</span>())</span></code></pre></div>
+<p><img src="_main_files/figure-html/ch4-4-1.png" width="672" /></p>
 <p>Looking at the performance metrics, we can see that the estimated fit of the multiple
 linear regression has a better estimated <span class="math inline">\(R^2\)</span> than the simple linear regression model
 from <a href="chapter-3.html#ch3-example">Chapter 3</a>. We shouldn’t be too overconfident here, though, adding

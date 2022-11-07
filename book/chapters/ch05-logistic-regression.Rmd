@@ -61,7 +61,7 @@ given that there are $K$ possible values for $Y$, one possible $K$ is chosen as 
 default, or *baseline* value. Consider the example of a model to classify flower species
 using the `iris` data set.
 
-```{r ch5-1, echo=FALSE}
+```{r ch5-1}
 skimr::skim(iris)
 ```
 
@@ -185,6 +185,7 @@ iris_predictions <- augment(iris_workflow, iris_data)
   |> count(setosa, .pred_class)
   |> pivot_wider(names_from = .pred_class, values_from = n))
 ```
+
 
 In this binary case, the results can be classified in four different ways:
 
@@ -337,8 +338,7 @@ eval_metrics(
 For our example logistic regression, let's attempt to classify diamonds by expected
 'price class' using the `diamonds` dataset.
 
-<div style="padding:1em;" class="sourceCode r">
-
+::: {.sourceCode .r style="padding:1em;"}
 ```{r ch5-7, echo=FALSE}
 helpfile <- utils:::.getHelpFile(help(diamonds))
 outfile <- tempfile(fileext = ".html")
@@ -346,8 +346,7 @@ tools:::Rd2HTML(helpfile, out =outfile)
 rawHTML <- paste(readLines(outfile), collapse="\n")
 knitr::asis_output(htmltools::htmlPreserve(rawHTML))
 ```
-
-</div>
+:::
 
 ```{r ch5-8}
 skim(diamonds)
