@@ -409,7 +409,7 @@ We can add <em>exploratory data analysis</em> steps to suss out any complicating
 <h3><span class="header-section-number">4.6.1</span> Correlated Predictors<a href="chapter-4.html#ch-correlated-predictors" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="chapter-4.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a scatterplot matrix to identify correlations</span></span>
 <span id="cb33-2"><a href="chapter-4.html#cb33-2" aria-hidden="true" tabindex="-1"></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(mtcars, <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;disp&quot;</span>, <span class="st">&quot;hp&quot;</span>, <span class="st">&quot;drat&quot;</span>, <span class="st">&quot;wt&quot;</span>, <span class="st">&quot;qsec&quot;</span>), <span class="at">progress =</span> F)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-131-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>In this <em>scatterplot matrix</em>, the bottom half of the plot shows scatterplots for each
 row/column combination, the top half includes the raw correlations and their
 significance (more asterisks == more correlation), and the central diagonal indicates a
@@ -509,7 +509,7 @@ shown below.</p>
 <span id="cb42-6"><a href="chapter-4.html#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;orange&quot;</span>)</span>
 <span id="cb42-7"><a href="chapter-4.html#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Multiple Linear Regression&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Predicted&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Actual&quot;</span>)</span>
 <span id="cb42-8"><a href="chapter-4.html#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">theme_minimal</span>())</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-132-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Looking at the performance metrics, we can see that the estimated fit of the multiple
 linear regression has a better estimated <span class="math inline">\(R^2\)</span> than the simple linear regression model
 from <a href="chapter-3.html#ch3-example">Chapter 3</a>. We shouldn’t be too overconfident here, though, adding

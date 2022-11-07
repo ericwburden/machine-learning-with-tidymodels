@@ -1,6 +1,6 @@
-tab:unnamed-chunk-133
-tab:unnamed-chunk-134
-tab:unnamed-chunk-140
+tab:ch5-1
+tab:ch5-2
+tab:ch5-8
 chapter-1
 ch1-software_used
 chapter-2

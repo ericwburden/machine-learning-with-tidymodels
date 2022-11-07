@@ -61,7 +61,7 @@ given that there are $K$ possible values for $Y$, one possible $K$ is chosen as 
 default, or *baseline* value. Consider the example of a model to classify flower species
 using the `iris` data set.
 
-```{r echo=FALSE}
+```{r ch5-1, echo=FALSE}
 skimr::skim(iris)
 ```
 
@@ -137,7 +137,7 @@ of the *setosa* species.
 
 [^1]: Definition from [Wikipedia](https://en.wikipedia.org/wiki/Confusion_matrix).
 
-```{r}
+```{r ch5-2}
 set.seed(6047)
 
 # I'm going to start by switching around the classes on a few of the
@@ -249,7 +249,7 @@ threshold can be manipulated in order to further evaluate the model fit. By plot
 *sensitivity* against [1 - *specificity*] for a range of threshold values, you get a
 *received operator characteristic* (ROC) chart:
 
-```{r}
+```{r ch5-3}
 (iris_predictions
   |> roc_curve(truth = setosa, .pred_TRUE) 
   |> autoplot())
@@ -262,7 +262,7 @@ the top. The *area under the curve* (AUC) is a value between 0 and 1 that provid
 quantitative measurement of the performance indicated by the ROC curve. The closer this
 value is to 1, the better the model has performed.
 
-```{r}
+```{r ch5-4}
 # Define a set of metrics using the `yardstick` package
 eval_metrics <- metric_set(ppv,    recall, specificity, accuracy, 
                            f_meas, kap,    roc_auc)
@@ -278,7 +278,7 @@ eval_metrics(
 
 When expanding our predictive value to predicting *all* classes of iris species:
 
-```{r echo=TRUE}
+```{r ch5-5, echo=TRUE}
 # This recipe assumes that `Species` is predicted by all other values,
 # creates interaction terms, and normalizes all the numeric predictors.
 (iris_recipe
@@ -317,7 +317,7 @@ data set). Each row represents the true class of the flower while each column re
 the predicted class of each flower. In a perfect world, we would only have numbers on
 the diagonal. We can examine the same metrics as we did in the binomial case:
 
-```{r}
+```{r ch5-6}
 eval_metrics <- metric_set(ppv,    recall, specificity, accuracy, 
                            f_meas, kap,    roc_auc)
 eval_metrics(
@@ -337,9 +337,9 @@ eval_metrics(
 For our example logistic regression, let's attempt to classify diamonds by expected
 'price class' using the `diamonds` dataset.
 
-<div style="background:#f7f7f7;padding:1em;">
+<div style="padding:1em;" class="sourceCode r">
 
-```{r echo=FALSE}
+```{r ch5-7, echo=FALSE}
 helpfile <- utils:::.getHelpFile(help(diamonds))
 outfile <- tempfile(fileext = ".html")
 tools:::Rd2HTML(helpfile, out =outfile)
@@ -349,7 +349,7 @@ knitr::asis_output(htmltools::htmlPreserve(rawHTML))
 
 </div>
 
-```{r}
+```{r ch5-8}
 skim(diamonds)
 ```
 
@@ -362,7 +362,7 @@ You'd also want to consider the business use case here, but since this is an exa
 logistic regression modeling more than a primer on the diamond trade, let's stick to
 making roughly equal size groups. Let's take a look a the distribution of `price`.
 
-```{r}
+```{r ch5-9}
 ggplot(diamonds, aes(price)) +
   geom_histogram(bins = 50) +
   theme_minimal()
@@ -371,7 +371,7 @@ ggplot(diamonds, aes(price)) +
 Oh, well, that's troublesome. Looks like we'll need to log-transform `price` if we want
 it to be evenly distributed across the range.
 
-```{r}
+```{r ch5-10}
 ggplot(diamonds, aes(log(price))) +
   geom_histogram(bins = 50) +
   theme_minimal()
@@ -379,7 +379,7 @@ ggplot(diamonds, aes(log(price))) +
 
 That's *much* better. Now, let's identify the optimal interval size:
 
-```{r}
+```{r ch5-11}
 (tibble(buckets = seq_len(10))
   |> mutate(.calc = map(buckets, ~ (
     diamonds
@@ -404,7 +404,7 @@ classes.
 Let's start by establishing the correlations amongst the numeric variables in this
 dataset:
 
-```{r}
+```{r ch5-12, cache=TRUE}
 # Use a scatterplot matrix to identify correlations
 columns <- c("price", "carat", "depth", "table", "x", "y", "z")
 GGally::ggpairs(diamonds, columns = columns, progress = F)
@@ -423,19 +423,19 @@ We can make a few observations here:
 
 There are a few categorical variables as well that we should examine:
 
-```{r}
+```{r ch5-13}
 ggplot(diamonds, aes(price, carat, color = cut)) +
   geom_point(alpha = 0.5) +
   theme_minimal()
 ```
 
-```{r}
+```{r ch5-14}
 ggplot(diamonds, aes(price, carat, color = color)) +
   geom_point(alpha = 0.5) +
   theme_minimal()
 ```
 
-```{r}
+```{r ch5-15}
 ggplot(diamonds, aes(price, carat, color = clarity)) +
   geom_point(alpha = 0.5) +
   theme_minimal()
@@ -445,7 +445,7 @@ There appears to be *some* variation in `price`/`carat` based on these categoric
 values, but it's not extremely pronounced. The patterns are perhaps more easily
 observable on the correlogram.
 
-```{r}
+```{r ch5-16, cache=TRUE}
 columns <- c("price", "cut", "color", "clarity")
 GGally::ggpairs(diamonds, columns = columns, progress = F)
 ```
@@ -464,7 +464,7 @@ one continuous predictor variable (`carat`), any high-leverage points should be 
 easy to find. (Note, recall that above we indicated a that we should log-transform
 `carat` due to its distribution, so we should do that here as well).
 
-```{r}
+```{r ch5-17}
 ggplot(diamonds, aes(factor(1), log(carat))) +
   geom_boxplot() +
   theme_minimal()
@@ -473,7 +473,7 @@ ggplot(diamonds, aes(factor(1), log(carat))) +
 Looks like there are two values for `carat` that fall way outside the range of the
 majority of the values. Let's find them:
 
-```{r}
+```{r ch5-18}
 (diamonds
   |> arrange(desc(carat))
   |> head(2)
@@ -484,7 +484,7 @@ majority of the values. Let's find them:
 
 Just for fun, let's check the normal range for `carat`:
 
-```{r}
+```{r ch5-19}
 mean_carat <- mean(log(diamonds$carat)) |> round(2)
 sd_carat   <- sd(log(diamonds$carat)) |> round(2)
 paste(mean_carat, "+/-", sd_carat)
@@ -510,7 +510,7 @@ From exploring the dataset, I've decided to:
 
 -   Add an interaction parameter for `color:cut`.
 
-```{r}
+```{r ch5-20}
 set.seed(800633)
 
 # Modification to response variables should not be part of the workflow
@@ -544,9 +544,11 @@ mod_diamonds_split <- initial_split(mod_diamonds)
 log_reg_predictions <- augment(log_reg_workflow, testing(mod_diamonds_split))
 
 # Check performance using the same set of metrics as we did previously
-(metrics(log_reg_predictions, price_cat, .pred_class))
-eval_metrics <- metric_set(ppv,    recall, specificity, accuracy, 
-                           f_meas, kap,    roc_auc)
+eval_metrics <- metric_set(
+  ppv,      recall, specificity, 
+  accuracy, f_meas, kap,    
+  roc_auc
+)
 eval_metrics(
   data = log_reg_predictions, 
   truth = price_cat, 
@@ -561,7 +563,7 @@ eval_metrics(
 
 The metrics look pretty good, let's take a look at the confusion matrix...
 
-```{r}
+```{r ch5-21}
 (log_reg_predictions
   |> count(price_cat, .pred_class)
   |> pivot_wider(names_from = .pred_class, values_from = n))
