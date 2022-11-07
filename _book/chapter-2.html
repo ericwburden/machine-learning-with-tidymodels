@@ -26,7 +26,7 @@ syntax and workflow for leveraging these techniques.</p>" />
 <meta name="author" content="Eric Burden" />
 
 
-<meta name="date" content="2022-11-03" />
+<meta name="date" content="2022-11-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -228,7 +228,14 @@ div.csl-indent {
 <li class="chapter" data-level="5.4.1" data-path="chapter-5.html"><a href="chapter-5.html#ch5-binomial-logistic-regression"><i class="fa fa-check"></i><b>5.4.1</b> Binomial Logistic Regression</a></li>
 <li class="chapter" data-level="5.4.2" data-path="chapter-5.html"><a href="chapter-5.html#ch5-multinomial-logistic-regression"><i class="fa fa-check"></i><b>5.4.2</b> Multinomial Logistic Regression</a></li>
 </ul></li>
-<li class="chapter" data-level="5.5" data-path="chapter-5.html"><a href="chapter-5.html#ch5-example"><i class="fa fa-check"></i><b>5.5</b> Example</a></li>
+<li class="chapter" data-level="5.5" data-path="chapter-5.html"><a href="chapter-5.html#ch5-example"><i class="fa fa-check"></i><b>5.5</b> Example</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="chapter-5.html"><a href="chapter-5.html#dataset"><i class="fa fa-check"></i><b>5.5.1</b> Dataset</a></li>
+<li class="chapter" data-level="5.5.2" data-path="chapter-5.html"><a href="chapter-5.html#response-categories"><i class="fa fa-check"></i><b>5.5.2</b> Response Categories</a></li>
+<li class="chapter" data-level="5.5.3" data-path="chapter-5.html"><a href="chapter-5.html#correlations"><i class="fa fa-check"></i><b>5.5.3</b> Correlations</a></li>
+<li class="chapter" data-level="5.5.4" data-path="chapter-5.html"><a href="chapter-5.html#high-leverage-points"><i class="fa fa-check"></i><b>5.5.4</b> High Leverage Points</a></li>
+<li class="chapter" data-level="5.5.5" data-path="chapter-5.html"><a href="chapter-5.html#fit-and-check"><i class="fa fa-check"></i><b>5.5.5</b> Fit and Check</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>6</b> References</a></li>
 <li class="divider"></li>
@@ -391,28 +398,28 @@ show below:</p>
 <span id="cb11-4"><a href="chapter-2.html#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(example_recipe)</span>
 <span id="cb11-5"><a href="chapter-2.html#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(example_model)</span>
 <span id="cb11-6"><a href="chapter-2.html#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> <span class="fu">training</span>(mtcars_split)))</span></code></pre></div>
-<pre><code>## ══ Workflow [trained] ══════════════════════════════════════════════════════════════════════════════
+<pre><code>## ══ Workflow [trained] ═══════════════════════════════════════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: linear_reg()
 ## 
-## ── Preprocessor ────────────────────────────────────────────────────────────────────────────────────
+## ── Preprocessor ─────────────────────────────────────────────────────────────────────────────────────
 ## 3 Recipe Steps
 ## 
 ## • step_mutate_at()
 ## • step_log()
 ## • step_interact()
 ## 
-## ── Model ───────────────────────────────────────────────────────────────────────────────────────────
+## ── Model ────────────────────────────────────────────────────────────────────────────────────────────
 ## 
 ## Call:  stats::glm(formula = ..y ~ ., family = stats::gaussian, data = data)
 ## 
 ## Coefficients:
 ## (Intercept)         cyl6         cyl8         disp           hp           wt    disp_x_hp  
-##      95.966       -1.815       -3.326       -9.199      -14.577       -3.072        2.121  
+##    116.9581      -0.9030       0.5044     -11.9599     -16.0951      -2.5162       2.0495  
 ## 
 ## Degrees of Freedom: 23 Total (i.e. Null);  17 Residual
-## Null Deviance:       707.4 
-## Residual Deviance: 79.92     AIC: 113</code></pre>
+## Null Deviance:       904.6 
+## Residual Deviance: 95.07     AIC: 117.1</code></pre>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="chapter-2.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to training data</span></span>
 <span id="cb13-2"><a href="chapter-2.html#cb13-2" aria-hidden="true" tabindex="-1"></a>example_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(example_workflow, <span class="fu">testing</span>(mtcars_split))</span>
 <span id="cb13-3"><a href="chapter-2.html#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -421,9 +428,9 @@ show below:</p>
 <pre><code>## # A tibble: 3 × 3
 ##   .metric .estimator .estimate
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-## 1 rmse    standard       2.97 
-## 2 rsq     standard       0.935
-## 3 mae     standard       1.94</code></pre>
+## 1 rmse    standard       2.06 
+## 2 rsq     standard       0.861
+## 3 mae     standard       1.62</code></pre>
 <p>To the untrained eye, it may appear that all the functions used in this code are from a
 common library, given the similarity in their usage and the ease with which the outputs
 of one operation are passed along to the next, but there are actually at least five

@@ -26,7 +26,7 @@ syntax and workflow for leveraging these techniques.</p>" />
 <meta name="author" content="Eric Burden" />
 
 
-<meta name="date" content="2022-11-03" />
+<meta name="date" content="2022-11-06" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -228,7 +228,14 @@ div.csl-indent {
 <li class="chapter" data-level="5.4.1" data-path="chapter-5.html"><a href="chapter-5.html#ch5-binomial-logistic-regression"><i class="fa fa-check"></i><b>5.4.1</b> Binomial Logistic Regression</a></li>
 <li class="chapter" data-level="5.4.2" data-path="chapter-5.html"><a href="chapter-5.html#ch5-multinomial-logistic-regression"><i class="fa fa-check"></i><b>5.4.2</b> Multinomial Logistic Regression</a></li>
 </ul></li>
-<li class="chapter" data-level="5.5" data-path="chapter-5.html"><a href="chapter-5.html#ch5-example"><i class="fa fa-check"></i><b>5.5</b> Example</a></li>
+<li class="chapter" data-level="5.5" data-path="chapter-5.html"><a href="chapter-5.html#ch5-example"><i class="fa fa-check"></i><b>5.5</b> Example</a>
+<ul>
+<li class="chapter" data-level="5.5.1" data-path="chapter-5.html"><a href="chapter-5.html#dataset"><i class="fa fa-check"></i><b>5.5.1</b> Dataset</a></li>
+<li class="chapter" data-level="5.5.2" data-path="chapter-5.html"><a href="chapter-5.html#response-categories"><i class="fa fa-check"></i><b>5.5.2</b> Response Categories</a></li>
+<li class="chapter" data-level="5.5.3" data-path="chapter-5.html"><a href="chapter-5.html#correlations"><i class="fa fa-check"></i><b>5.5.3</b> Correlations</a></li>
+<li class="chapter" data-level="5.5.4" data-path="chapter-5.html"><a href="chapter-5.html#high-leverage-points"><i class="fa fa-check"></i><b>5.5.4</b> High Leverage Points</a></li>
+<li class="chapter" data-level="5.5.5" data-path="chapter-5.html"><a href="chapter-5.html#fit-and-check"><i class="fa fa-check"></i><b>5.5.5</b> Fit and Check</a></li>
+</ul></li>
 </ul></li>
 <li class="chapter" data-level="6" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i><b>6</b> References</a></li>
 <li class="divider"></li>
@@ -402,7 +409,7 @@ We can add <em>exploratory data analysis</em> steps to suss out any complicating
 <h3><span class="header-section-number">4.6.1</span> Correlated Predictors<a href="chapter-4.html#ch-correlated-predictors" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="chapter-4.html#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Use a scatterplot matrix to identify correlations</span></span>
 <span id="cb33-2"><a href="chapter-4.html#cb33-2" aria-hidden="true" tabindex="-1"></a>GGally<span class="sc">::</span><span class="fu">ggpairs</span>(mtcars, <span class="at">columns =</span> <span class="fu">c</span>(<span class="st">&quot;disp&quot;</span>, <span class="st">&quot;hp&quot;</span>, <span class="st">&quot;drat&quot;</span>, <span class="st">&quot;wt&quot;</span>, <span class="st">&quot;qsec&quot;</span>), <span class="at">progress =</span> F)</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-131-1.png" width="672" /></p>
 <p>In this <em>scatterplot matrix</em>, the bottom half of the plot shows scatterplots for each
 row/column combination, the top half includes the raw correlations and their
 significance (more asterisks == more correlation), and the central diagonal indicates a
@@ -460,26 +467,26 @@ shown below.</p>
 <span id="cb38-4"><a href="chapter-4.html#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_recipe</span>(multiple_linear_regression_recipe)</span>
 <span id="cb38-5"><a href="chapter-4.html#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">add_model</span>(multiple_linear_regression_model)</span>
 <span id="cb38-6"><a href="chapter-4.html#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">|&gt;</span> <span class="fu">fit</span>(<span class="at">data =</span> <span class="fu">training</span>(mtcars_split)))</span></code></pre></div>
-<pre><code>## ══ Workflow [trained] ══════════════════════════════════════════════════════════════════════════════
+<pre><code>## ══ Workflow [trained] ═══════════════════════════════════════════════════════════════════════════════
 ## Preprocessor: Recipe
 ## Model: linear_reg()
 ## 
-## ── Preprocessor ────────────────────────────────────────────────────────────────────────────────────
+## ── Preprocessor ─────────────────────────────────────────────────────────────────────────────────────
 ## 2 Recipe Steps
 ## 
 ## • step_log()
 ## • step_interact()
 ## 
-## ── Model ───────────────────────────────────────────────────────────────────────────────────────────
+## ── Model ────────────────────────────────────────────────────────────────────────────────────────────
 ## 
 ## Call:
 ## stats::lm(formula = ..y ~ ., data = data)
 ## 
 ## Coefficients:
 ## (Intercept)         disp           hp         drat           wt         qsec    disp_x_hp  
-##   -207.5469      61.8227      42.7962      12.3023     -54.9870       1.5297     -10.9928  
+##      9.8223      -5.0773       9.2242      21.5371     -26.5927       1.5736       1.9581  
 ## disp_x_drat    disp_x_wt      hp_x_wt    hp_x_qsec    drat_x_wt  
-##     -3.2824       2.3299       5.7365      -0.1698       2.3599</code></pre>
+##     -6.8414       6.9204      -6.4707      -0.2865       5.1099</code></pre>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="chapter-4.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to training data</span></span>
 <span id="cb40-2"><a href="chapter-4.html#cb40-2" aria-hidden="true" tabindex="-1"></a>multiple_linear_regression_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(</span>
 <span id="cb40-3"><a href="chapter-4.html#cb40-3" aria-hidden="true" tabindex="-1"></a>  multiple_linear_regression_workflow, </span>
@@ -491,9 +498,9 @@ shown below.</p>
 <pre><code>## # A tibble: 3 × 3
 ##   .metric .estimator .estimate
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-## 1 rmse    standard       2.58 
-## 2 rsq     standard       0.830
-## 3 mae     standard       1.71</code></pre>
+## 1 rmse    standard       1.91 
+## 2 rsq     standard       0.899
+## 3 mae     standard       1.54</code></pre>
 <div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="chapter-4.html#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># It is often helpful to visualze results like this, comparing the </span></span>
 <span id="cb42-2"><a href="chapter-4.html#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="co"># actual values to the predicted values of the response variable.</span></span>
 <span id="cb42-3"><a href="chapter-4.html#cb42-3" aria-hidden="true" tabindex="-1"></a>(multiple_linear_regression_predictions</span>
@@ -502,7 +509,7 @@ shown below.</p>
 <span id="cb42-6"><a href="chapter-4.html#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">geom_abline</span>(<span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">slope =</span> <span class="dv">1</span>, <span class="at">color =</span> <span class="st">&quot;orange&quot;</span>)</span>
 <span id="cb42-7"><a href="chapter-4.html#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">&quot;Multiple Linear Regression&quot;</span>, <span class="at">x =</span> <span class="st">&quot;Predicted&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Actual&quot;</span>)</span>
 <span id="cb42-8"><a href="chapter-4.html#cb42-8" aria-hidden="true" tabindex="-1"></a>  <span class="sc">+</span>  <span class="fu">theme_minimal</span>())</span></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-132-1.png" width="672" /></p>
 <p>Looking at the performance metrics, we can see that the estimated fit of the multiple
 linear regression has a better estimated <span class="math inline">\(R^2\)</span> than the simple linear regression model
 from <a href="chapter-3.html#ch3-example">Chapter 3</a>. We shouldn’t be too overconfident here, though, adding
