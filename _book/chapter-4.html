@@ -520,9 +520,9 @@ shown below.</p>
 ## 
 ## Coefficients:
 ## (Intercept)         disp           hp         drat           wt         qsec    disp_x_hp  
-##   -236.5571      55.1520      48.2756       8.2504     -42.3966       6.4931      -9.3410  
+##      9.8223      -5.0773       9.2242      21.5371     -26.5927       1.5736       1.9581  
 ## disp_x_drat    disp_x_wt      hp_x_wt    hp_x_qsec    drat_x_wt  
-##     -2.5230       0.7156       5.6372      -1.3753       2.3645</code></pre>
+##     -6.8414       6.9204      -6.4707      -0.2865       5.1099</code></pre>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="chapter-4.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to training data</span></span>
 <span id="cb44-2"><a href="chapter-4.html#cb44-2" aria-hidden="true" tabindex="-1"></a>multiple_linear_regression_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(</span>
 <span id="cb44-3"><a href="chapter-4.html#cb44-3" aria-hidden="true" tabindex="-1"></a>  multiple_linear_regression_workflow, </span>
@@ -534,9 +534,9 @@ shown below.</p>
 <pre><code>## # A tibble: 3 × 3
 ##   .metric .estimator .estimate
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-## 1 rmse    standard       2.44 
-## 2 rsq     standard       0.860
-## 3 mae     standard       1.64</code></pre>
+## 1 rmse    standard       1.91 
+## 2 rsq     standard       0.899
+## 3 mae     standard       1.54</code></pre>
 <div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="chapter-4.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># It is often helpful to visualze results like this, comparing the </span></span>
 <span id="cb46-2"><a href="chapter-4.html#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="co"># actual values to the predicted values of the response variable.</span></span>
 <span id="cb46-3"><a href="chapter-4.html#cb46-3" aria-hidden="true" tabindex="-1"></a>(multiple_linear_regression_predictions</span>

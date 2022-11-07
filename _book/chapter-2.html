@@ -415,11 +415,11 @@ show below:</p>
 ## 
 ## Coefficients:
 ## (Intercept)         cyl6         cyl8         disp           hp           wt    disp_x_hp  
-##     142.780       -1.013       -3.410      -18.110      -24.913       -2.174        3.950  
+##    116.9581      -0.9030       0.5044     -11.9599     -16.0951      -2.5162       2.0495  
 ## 
 ## Degrees of Freedom: 23 Total (i.e. Null);  17 Residual
-## Null Deviance:       515.4 
-## Residual Deviance: 44.59     AIC: 98.97</code></pre>
+## Null Deviance:       904.6 
+## Residual Deviance: 95.07     AIC: 117.1</code></pre>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="chapter-2.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add predictions to training data</span></span>
 <span id="cb13-2"><a href="chapter-2.html#cb13-2" aria-hidden="true" tabindex="-1"></a>example_predictions <span class="ot">&lt;-</span> <span class="fu">augment</span>(example_workflow, <span class="fu">testing</span>(mtcars_split))</span>
 <span id="cb13-3"><a href="chapter-2.html#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -428,9 +428,9 @@ show below:</p>
 <pre><code>## # A tibble: 3 × 3
 ##   .metric .estimator .estimate
 ##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
-## 1 rmse    standard       3.95 
-## 2 rsq     standard       0.957
-## 3 mae     standard       3.34</code></pre>
+## 1 rmse    standard       2.06 
+## 2 rsq     standard       0.861
+## 3 mae     standard       1.62</code></pre>
 <p>To the untrained eye, it may appear that all the functions used in this code are from a
 common library, given the similarity in their usage and the ease with which the outputs
 of one operation are passed along to the next, but there are actually at least five

@@ -338,7 +338,7 @@ eval_metrics(
 For our example logistic regression, let's attempt to classify diamonds by expected
 'price class' using the `diamonds` dataset.
 
-::: {.sourceCode .r style="padding:1em;"}
+::: {.sourceCode .r style="padding:1em;box-shadow: 10px 5px 5px #f7f7f7;"}
 ```{r ch5-7, echo=FALSE}
 helpfile <- utils:::.getHelpFile(help(diamonds))
 outfile <- tempfile(fileext = ".html")
